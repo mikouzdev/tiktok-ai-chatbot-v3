@@ -1,0 +1,38 @@
+/* src/CyberpunkClock.css */
+@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+
+.cyberpunk-clock {
+  font-family: "VT323", monospace;
+  font-size: 4rem;
+  color: #ff00ff;
+  text-shadow: 0 0 1px #ff00ff, 0 0 1px #ff00ff, 0 0 1px #ff00ff,
+    0 0 1px #ff00ff, 0 0 1px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff;
+  background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+  padding: 20px;
+  border: 2px solid #ff00ff;
+  border-radius: 10px;
+  display: inline-block;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+  animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+  0%,
+  19.999%,
+  22%,
+  62.999%,
+  64%,
+  64.999%,
+  70%,
+  100% {
+    opacity: 0.99;
+  }
+  20%,
+  21.999%,
+  63%,
+  63.999%,
+  65%,
+  69.999% {
+    opacity: 0.5;
+  }
+}

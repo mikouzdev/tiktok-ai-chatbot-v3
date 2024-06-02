@@ -1,0 +1,215 @@
+/* 
+MainSite.css
+Stylesheet of the main page
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Manjari:wght@100&family=Poppins&display=swap");
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+/* General Styles */
+.body-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  gap: 1em;
+  padding: 10px;
+  background: linear-gradient(135deg, #121212, #1a1a2e);
+  background-image: url(cyber.gif);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.top-container,
+.chat-container,
+.settings-container,
+.tools-container,
+.comment,
+.answer {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+/* Header Styles */
+.site-header {
+  width: 100%;
+  text-align: center;
+  background-color: #2a2a40;
+  padding: 10px 0;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #ff00ff;
+  border-bottom: 2px solid #ff00ff;
+}
+
+.header-container {
+  text-align: center;
+  font-size: 1em;
+  padding-bottom: 0.33em;
+  font-weight: bold;
+  color: rgb(188, 188, 188);
+}
+
+.username {
+  color: #ff00ff;
+}
+
+/* Username Input */
+.top-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1f1f33;
+  width: 100%;
+  height: 6em;
+  padding: 3em;
+  margin-bottom: 1em;
+  border: 2px solid #8a2be2;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.input {
+  width: 18em;
+  height: 2.5em;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #8a2be2;
+  background-color: #2a2a40;
+  color: #ffffff;
+}
+
+.input:focus {
+  outline: none;
+  border: 1px solid #ff00ff;
+}
+
+.button {
+  width: 7em;
+  height: 2.5em;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  background-color: #8a2be2;
+  color: #ffffff;
+  transition: 200ms ease-in-out;
+}
+
+.button:hover {
+  background-color: #a653f0;
+  cursor: pointer;
+}
+
+.start {
+  background-color: #8a2be2;
+}
+
+.stop {
+  background-color: #ff0000;
+}
+
+/* Chat Container */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.33em;
+  width: 100%;
+  max-height: 60vh;
+  padding: 1.5em 0.75em;
+  background-color: #1f1f33;
+  background-image: url("galaxy.gif");
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow-y: auto;
+  border: 2px solid #8a2be2;
+}
+
+.chat-container:empty {
+  padding: 0;
+}
+
+.comment,
+.answer {
+  text-align: left;
+  padding: 1em;
+  width: 90%;
+  background-color: #2a2a40;
+  border: 1px solid #444444;
+  font-size: 1.33em;
+}
+
+/* Comment Chat Bubble */
+.comment {
+  color: white;
+  align-self: flex-start;
+  background-color: #2d2f6e;
+  border-radius: 0 25px 25px 25px;
+  border: 3px solid rgb(236, 89, 255);
+}
+
+/* Answer Chat Bubble */
+.answer {
+  color: white;
+  align-self: flex-end;
+  background-color: #532c75;
+  border-radius: 25px 25px 0 25px;
+  border: 3px solid rgb(57, 164, 241);
+}
+
+/* Typing Indicator */
+.typing-indicator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #343473;
+  border: 2px solid #a64ba6;
+  border-radius: 33px 33px 0 33px;
+  width: 10%;
+  align-self: flex-end;
+}
+
+.typing-indicator {
+  height: 2em;
+  color: #fff;
+  font-size: 2em;
+}
+
+.typing-indicator::after {
+  content: ".";
+  animation: typing 1.75s steps(3, end) infinite;
+}
+
+@keyframes typing {
+  0%,
+  100% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+}
