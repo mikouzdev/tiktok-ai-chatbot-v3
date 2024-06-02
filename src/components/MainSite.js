@@ -29,24 +29,34 @@ const MainSite = () => {
   const [isTyping, setIsTyping] = useState(false); // State for typing indicator
 
   // Function to add a new message to the chat
-  const addMessageToChat = useCallback((username, commentText, className) => {
-    setMessages((prevMessages) => {
-      // Clear messages if there are already two of them
-      const newMessages =
-        prevMessages.length >= 2
-          ? [{ username, commentText, className }]
-          : [...prevMessages, { username, commentText, className }];
+  const addMessageToChat = useCallback(
+    (username, commentText, followRole, className) => {
+      setMessages((prevMessages) => {
+        // Clear messages if there are already two of them
+        const newMessages =
+          prevMessages.length >= 2
+            ? [{ username, commentText, followRole, className }]
+            : [
+                ...prevMessages,
+                { username, commentText, followRole, className },
+              ];
 
-      // Update isTyping state based on the number of messages
-      setIsTyping(newMessages.length === 1);
+        // Update isTyping state based on the number of messages
+        setIsTyping(newMessages.length === 1);
 
-      return newMessages;
-    });
-  }, []);
+        return newMessages;
+      });
+    },
+    []
+  );
 
   // Function to handle username input change
   const handleInputChange = (event) => {
     setUsername(event.target.value);
+
+    addMessageToChat("@jormanej3_32", "test", 0, "comment");
+
+    addMessageToChat(`👽`, "botin vastaus", 3, "answer");
   };
 
   // Function to handle starting the chat
@@ -78,7 +88,7 @@ const MainSite = () => {
           const newAudio = new Audio(URL.createObjectURL(blob)); // Create a new Audio object with the received audio blob
           setAudio(newAudio); // Set the audio state
           newAudio.play(); // Play the audio
-          addMessageToChat(`👽`, text, "answer"); // Add the answer message to the chat
+          addMessageToChat(`👽`, text, 3, "answer"); // Add the answer message to the chat
           newAudio.addEventListener("ended", () => {
             console.log("TTS done playing");
             socket.emit("TextToSpeechFinished"); // Send an event to the server when the audio finishes playing
@@ -119,7 +129,12 @@ const MainSite = () => {
     if (socket) {
       const handleComment = (data) => {
         if (data.type === "comment") {
-          addMessageToChat(data.commentUsername, data.commentText, "comment"); // Add the comment to the chat
+          addMessageToChat(
+            data.commentUsername,
+            data.commentText,
+            data.followRole,
+            "comment"
+          ); // Add the comment to the chat
         }
         console.log(data);
       };
@@ -166,7 +181,6 @@ const MainSite = () => {
             </div>
           )}
         </Chat>
-        <CyberpunkClock />
       </Container>
     </div>
   );

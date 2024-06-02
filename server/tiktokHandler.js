@@ -186,6 +186,7 @@ const processComment = (user, comment, followRole, socket) => {
     type: "comment",
     commentUsername: user,
     commentText: comment,
+    followRole: followRole,
   });
 };
 

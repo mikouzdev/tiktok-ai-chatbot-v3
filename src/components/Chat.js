@@ -5,8 +5,19 @@ function Chat({ className, messages, children }) {
     <div className={className}>
       {messages.map((message, index) => (
         <h3 key={index} className={message.className}>
-          <span className="username">{message.username}</span>
-          <span>: {message.commentText}</span>
+          <div className="msg-top">
+            <span className="username">{message.username}</span>
+            <span className="follow-role">
+              {message.followRole === 0
+                ? "Ei seuraa"
+                : message.followRole === 1
+                ? "Follower"
+                : message.followRole === 2
+                ? "Friend"
+                : "AI"}
+            </span>
+          </div>
+          <span className="comment-txt">{message.commentText}</span>
         </h3>
       ))}
       {children}
