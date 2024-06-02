@@ -31,13 +31,21 @@ app.use(
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Function to handle the api call of the tts
 app.get("/api/audio", ttsHandler.handleAudioRequest);
 
+// Function to handle the api calls of removing a comment from the queue
 app.post("/api/deleteComment", (req, res) => {
   const { index } = req.body;
   if (index !== undefined) {
-    queue.deleteComment(index);
-    res.json({ success: true });
+    const success = queue.deleteComment(index);
+    if (success) {
+      res.json({ success: true, message: "Comment deleted successfully" });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "Failed to delete comment" });
+    }
   } else {
     res.status(400).json({ success: false, message: "Index is required" });
   }

@@ -47,12 +47,29 @@ const getQueue = () => queue;
 
 // Function to delete comments from queue
 const deleteComment = (index) => {
-  if (index >= 0 && index < queue.length) {
+  // Check if the index is a valid number
+  if (typeof index !== "number" || isNaN(index)) {
+    console.error("Invalid index. Index must be a valid number.");
+    return false;
+  }
+
+  // Check if the index is within the valid range
+  if (index < 0 || index >= queue.length) {
+    console.error("Index out of range. Index must be within the queue length.");
+    return false;
+  }
+
+  try {
     const [deletedComment] = queue.splice(index, 1);
     logger.queue(
       `Deleted from queue: | ${deletedComment.user}: "${deletedComment.comment}"`
     );
     emitQueueUpdate();
+    return true;
+  } catch (error) {
+    // Handle any errors that may occur during the splice operation or logging
+    console.error("Error deleting comment:", error.message);
+    return false;
   }
 };
 
