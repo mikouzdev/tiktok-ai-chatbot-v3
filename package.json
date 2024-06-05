@@ -15,7 +15,7 @@
     "fs-extra": "^11.2.0",
     "node-fetch": "^3.3.2",
     "nth-check": "^2.1.1",
-    "openai": "^3.3.0",
+    "openai": "^4.48.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",

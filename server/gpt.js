@@ -1,9 +1,9 @@
+const OpenAI = require("openai");
 require("dotenv").config();
-const { Configuration, OpenAIApi } = require("openai");
-const configuration = new Configuration({
+
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 //#region ChatGPT prompt declarations
 const messagePrompts = {
@@ -86,30 +86,30 @@ const messagePrompts = {
     Ole ihastunut, kissamainen, söpö ja hieman ujo. Käytä uwu-kieltä. Pienet alkukirjaimet.
     Lisätietoja: kommentoija seuraa sinua!`,
 };
-
 // #endregion
 
 //#region Main functions
-// Function to handle fetching the llms output
+// Function to handle fetching the gpt output
 async function fetchAnswer(followRole, question, pastCommentsString) {
   const systemMessage = generateSystemMessage(followRole);
   const finalPrompt = `${systemMessage}\n#USERS PAST COMMENTS:\n${pastCommentsString}#`;
   const randomTemp = Math.random(0.85, 1.2);
 
-  console.log(`|---\n${finalPrompt}\n---|`);
+  // console.log(`|---\n${finalPrompt}\n---|`);
 
   try {
-    const completion = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: finalPrompt },
         { role: "user", content: question },
       ],
-      max_tokens: 25,
+      max_tokens: 120,
       temperature: randomTemp,
     });
 
-    return completion.data.choices[0].message.content;
+    console.log(response.choices[0].message.content);
+    return response.choices[0].message.content;
   } catch (error) {
     console.error("Error fetching answer:", error);
     throw error;

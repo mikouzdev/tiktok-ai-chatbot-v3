@@ -54,9 +54,9 @@ const MainSite = () => {
   const handleInputChange = (event) => {
     setUsername(event.target.value);
 
-    addMessageToChat("@jormanej3_32", "test", 0, "comment");
+    // addMessageToChat("@jormanej3_32", "test", 0, "comment");
 
-    addMessageToChat(`👽`, "botin vastaus", 3, "answer");
+    // addMessageToChat(`👽`, "botin vastaus", 3, "answer");
   };
 
   // Function to handle starting the chat

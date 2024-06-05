@@ -7,6 +7,7 @@ const tiktokHandler = require("./tiktokHandler");
 const ttsHandler = require("./ttsHandler");
 const queue = require("./commentQueue.js"); // Import your queue module
 const cors = require("cors");
+const gptHandler = require("./gptHandler.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -32,7 +33,7 @@ app.use(
 app.use(express.json());
 
 // Function to handle the api call of the tts
-app.get("/api/audio", ttsHandler.handleAudioRequest);
+app.get("/api/audio", ttsHandler.handleAudioRequestNew);
 
 // Function to handle the api calls of removing a comment from the queue
 app.post("/api/deleteComment", (req, res) => {
@@ -64,4 +65,6 @@ queue.initialize(io);
 const port = process.env.PORT || 3001;
 server.listen(port, () => {
   logger.info(`Server listening on port ${port}`);
+
+  // Test the TTS functionality 3 seconds after server initialization
 });
