@@ -31,7 +31,7 @@ body {
   width: 100vw;
   gap: 1em;
   padding: 10px;
-  background-color: #3b1f2b;
+  background-color: #141414;
 }
 
 .top-container,
@@ -72,21 +72,22 @@ body {
   gap: 0.75em;
   padding: 0.75em;
   width: 90%;
-  border: 1px solid #444444;
+  border: 0;
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.25);
 }
 
+/* Container for the comment */
 .comment {
   align-self: flex-start;
-  background-color: #0f110c;
+  background: linear-gradient(-45deg, #181818, #0f110c);
   border-radius: 0 20px 20px 20px;
-  border: 2px solid #3b1f2b;
 }
 
+/* Container for the answer */
 .answer {
   align-self: flex-end;
-  background-color: #0f110c;
+  background: linear-gradient(90deg, #181818, #0f110c);
   border-radius: 20px 20px 0 20px;
-  border: 2px solid #3b1f2b;
 }
 
 .msg-top {
@@ -107,18 +108,19 @@ body {
 
 .username {
   flex: 2;
-  background-color: #282828;
+  /* background-color: #282828; */
+  background: linear-gradient(120deg, #323232, #282828);
   text-align: center;
 }
 
 .follow-role {
   flex: 1;
-  background-color: #d74e09;
+  /* background-color: #d74e09; */
+  background: linear-gradient(120deg, #fe9b69, #d74e09);
   text-align: center;
 }
 
 .comment-txt {
-  /* border: 2px solid red; */
   padding-left: 0.33em;
 }
 
@@ -128,12 +130,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #3b1f2b;
+  background: linear-gradient(180deg, #202020, #1a1a1a);
   width: 100%;
   height: 6em;
   padding: 3em;
   margin-bottom: 1em;
-  border: 2px solid #ffe66d;
+  /* border: 2px solid #ffe66d; */
 }
 
 .input-container {
@@ -148,14 +150,14 @@ body {
   height: 2.5em;
   padding: 10px;
   border-radius: 4px;
-  border: 1px solid #6622cc;
+  border: 1px solid #5e21b8;
   background-color: #28151d;
   color: #ffffff;
 }
 
 .input:focus {
   outline: none;
-  border: 1px solid #7d2bf8;
+  border: 1px solid #7b41d2;
 }
 
 .button {
@@ -164,18 +166,17 @@ body {
   padding: 10px;
   border-radius: 4px;
   border: none;
-  background-color: #8a2be2;
   color: #ffffff;
-  transition: 200ms ease-in-out;
 }
 
 .button:hover {
-  background-color: #511ba1;
+  background: linear-gradient(120deg, #8340e8, #5e21b8);
   cursor: pointer;
 }
 
 .start {
-  background-color: #6622cc;
+  /* background-color: #6622cc; */
+  background: linear-gradient(120deg, #8736ff, #6c26d4);
 }
 
 .stop {
@@ -191,11 +192,12 @@ body {
   width: 100%;
   max-height: 60vh;
   padding: 1.5em 0.75em;
-  background-color: #3b1f2b;
+  /* background-color: #222222; */
+  background: linear-gradient(180deg, #202020, #1a1a1a);
   background-size: cover;
   background-repeat: no-repeat;
   overflow-y: auto;
-  border: 2px solid #ffe66d;
+  /* border: 2px solid #ffe66d; */
 }
 
 .chat-container:empty {

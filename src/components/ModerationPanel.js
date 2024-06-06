@@ -18,7 +18,6 @@ function ModerationPanel() {
   const socket = useContext(SocketContext);
   const [queueList, setQueueList] = useState([]);
   const [error, setError] = useState("");
-  const [testComment, setTestComment] = useState("");
 
   useEffect(() => {
     if (socket) {
@@ -105,28 +104,6 @@ function ModerationPanel() {
     setQueueList((prevQueue) => [...prevQueue, randomComment]);
   };
 
-  const sendTestComment = () => {
-    fetch("/api/addComment", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ comment: testComment }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setTestComment(""); // Clear the input field after successful submission
-        } else {
-          setError("Failed to send the test comment.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error sending test comment:", error);
-        setError("Failed to send the test comment. Please try again later.");
-      });
-  };
-
   return (
     <div className="mod-panel-site">
       <div className="mod-queue-panel">
@@ -164,16 +141,6 @@ function ModerationPanel() {
         </button>
       </div>
       {/* Test */}
-      <div className="test-comment-section">
-        <h2>Test Comment</h2>
-        <input
-          type="text"
-          value={testComment}
-          onChange={(e) => setTestComment(e.target.value)}
-          placeholder="Enter a test comment"
-        />
-        <button onClick={sendTestComment}>Send Test Comment</button>
-      </div>
     </div>
   );
 }

@@ -12,7 +12,6 @@ let tiktokUsername;
 let allowCommentProcessing = true;
 let prevComment;
 const useTextToSpeech = config.useTextToSpeech;
-const queueTimeout = 1500; // time between tts finished -> process next comment (in milliseconds).
 
 // Data structure to store user comments
 let userComments = {};
@@ -216,20 +215,16 @@ function handleTextToSpeechFinished(socket) {
   // Start processing queue after tts; if there is a queue.
   // Check if there is a queue
   if (commentQueue.size() > 0) {
-    logger.info(`Waiting ${queueTimeout}ms before processing next`);
-    setTimeout(() => {
-      logger.info("Timeout done, allowing next");
-      const nextComment = commentQueue.dequeue(); // Get the next comment from the queue
-      logger.queue(
-        `Processing next: \nQueue size is now: ${commentQueue.size()}`
-      );
-      processComment(
-        nextComment.user,
-        nextComment.comment,
-        nextComment.followRole,
-        socket
-      );
-    }, queueTimeout);
+    const nextComment = commentQueue.dequeue(); // Get the next comment from the queue
+    logger.queue(
+      `Processing next: \nQueue size is now: ${commentQueue.size()}`
+    );
+    processComment(
+      nextComment.user,
+      nextComment.comment,
+      nextComment.followRole,
+      socket
+    );
   }
 }
 
