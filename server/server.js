@@ -1,3 +1,5 @@
+// server.js
+
 require("dotenv").config();
 const express = require("express");
 const http = require("http");
@@ -7,7 +9,6 @@ const tiktokHandler = require("./tiktokHandler");
 const ttsHandler = require("./ttsHandler");
 const queue = require("./commentQueue.js"); // Import your queue module
 const cors = require("cors");
-const gptHandler = require("./gptHandler.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -18,8 +19,6 @@ const io = socketio(server, {
     credentials: true,
   },
 });
-
-// For fetching mfw
 
 // Correctly configure CORS middleware
 app.use(
@@ -52,10 +51,28 @@ app.post("/api/deleteComment", (req, res) => {
   }
 });
 
+// Function to handle receiving and logging test comments
+app.post("/api/testComment", (req, res) => {
+  const { user, comment, followRole } = req.body;
+  if (user && comment && followRole !== undefined) {
+    // Log the received test comment data
+    // logger.info(
+    //   `[TEST COMMENT]: User: ${user}, Comment: ${comment}, Follow Role: ${followRole}`
+    // );
+
+    tiktokHandler.handleTestComment(user, comment, followRole, io); // io as the socket object
+
+    // Send a success response
+    res.json({ success: true, message: "Test comment received successfully" });
+  } else {
+    // Send an error response if required data is missing
+    res.status(400).json({ success: false, message: "Missing required data" });
+  }
+});
+
 io.on("connection", (socket) => {
   logger.info(`[SERVER]: Connection established`);
   tiktokHandler.initialize(socket, io);
-
   socket.emit("queueUpdate", queue.getQueue());
 });
 
@@ -65,6 +82,4 @@ queue.initialize(io);
 const port = process.env.PORT || 3001;
 server.listen(port, () => {
   logger.info(`Server listening on port ${port}`);
-
-  // Test the TTS functionality 3 seconds after server initialization
 });

@@ -1,3 +1,5 @@
+// tiktokHandler.js
+
 const { WebcastPushConnection } = require("tiktok-live-connector");
 const logger = require("../utils/logger.js");
 const commentQueue = require("./commentQueue.js");
@@ -93,7 +95,7 @@ const handleTikTokLiveConnection = (socket) => {
 };
 
 // Function to handle the tiktok disconnection
-const handleTikTokDisconnect = (socket) => {
+const handleTikTokDisconnect = () => {
   if (tiktokLiveConnection) {
     tiktokLiveConnection.disconnect();
     commentQueue.clear();
@@ -132,6 +134,12 @@ const handleUsername = (incomingUsername, socket) => {
 
 //#region Comment handling
 
+// Handling function of a test comment
+const handleTestComment = (user, comment, followRole, socket) => {
+  logger.info("Handling a test comment.");
+  handleComment(user, comment, followRole, socket);
+};
+
 // Step 1
 // Function to handle incoming comments
 const handleComment = (user, comment, followRole, socket) => {
@@ -154,17 +162,16 @@ const handleComment = (user, comment, followRole, socket) => {
 };
 
 // Step 2
-// Function to process a comment
+// Function to process a comment.
 const processComment = (user, comment, followRole, socket) => {
   logger.info(`Step 2: Processing comment from ${user}`);
   allowCommentProcessing = false;
   prevComment = comment;
-  let formatedComment = `${user}: ${comment}`;
 
-  // Retrieve and format past comments for the user
-  const pastCommentsString = getUserPastComments(user);
-  logger.info(`Past comments from ${user}:`);
-  logger.info(pastCommentsString);
+  const formatedComment = `${user}: ${comment}`;
+  const pastCommentsString = getUserPastComments(user); // Retrieve and format past comments for the user
+  // logger.info(`Past comments from ${user}:`);
+  // logger.info(pastCommentsString);
 
   // Handle sending comment to the GPT
   gptHandler.handleAnswer(
@@ -178,10 +185,10 @@ const processComment = (user, comment, followRole, socket) => {
     }
   );
 
-  // Process comment after validation
+  // Add comment to comment history array
   addUserCommentToArray(user, comment);
 
-  // Emit comment to the front end
+  // Emit comment to front
   socket.emit("Comment", {
     type: "comment",
     commentUsername: user,
@@ -204,13 +211,12 @@ function commentRulesPassed(comment) {
     return true;
   }
 }
-
 //#endregion
 
 // Function to handle what to do when text to speech has finished playing
 function handleTextToSpeechFinished(socket) {
   allowCommentProcessing = true;
-  logger.info("Step 4: Text-to-speech finished. Go next!");
+  logger.info("Final step: Text-to-speech finished.");
 
   // Start processing queue after tts; if there is a queue.
   // Check if there is a queue
@@ -249,7 +255,7 @@ function addUserCommentToArray(user, comment) {
   }
   userComments[user].push(comment);
 
-  // Save user comments to JSON file
+  // Save user comments to a JSON file
   saveUserComments();
 }
 
@@ -283,4 +289,4 @@ function loadUserComments() {
   }
 }
 
-module.exports = { initialize };
+module.exports = { initialize, handleTestComment };

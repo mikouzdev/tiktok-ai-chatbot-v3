@@ -8,24 +8,70 @@ Stylesheet of the moderation page.
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center;
-  padding: 3em;
+  flex-direction: row;
+  gap: 1.33em;
+  padding: 1.33em;
   background-color: #ffca5f;
   overflow-y: auto;
 }
 
 /* Styling of the queue panel */
 .mod-queue-panel {
+  flex: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1em;
+  gap: 0.5em;
   width: 50em;
   height: fit-content;
   padding: 1em;
   background-color: #f5f5f5;
   border-radius: 8px;
   box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.13);
+  border: 2px solid red;
+}
+
+.mod-comment-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  align-items: center;
+  gap: 0.5em;
+  height: fit-content;
+  background-color: #f5f5f5;
+  border: 2px solid red;
+}
+
+.mod-comment-title {
+  text-align: center;
+  color: #ffffff;
+  background-color: #50514f;
+  border-radius: 15px;
+  width: 100%;
+  padding: 0.33em;
+}
+
+.mod-comment-inside {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5em;
+  padding: 0.5em;
+
+  border: 2px solid blue;
+}
+
+.mod-comment-inside input,
+select {
+  padding: 0.5em;
+  width: 75%;
+}
+
+.mod-comment-inside button {
+  padding: 0.5em;
 }
 
 .mod-queue-panel-title {
@@ -33,13 +79,14 @@ Stylesheet of the moderation page.
   color: #ffffff;
   background-color: #50514f;
   border-radius: 15px;
-  padding: 0.5em;
+  padding: 0.33em;
 }
 
 .error {
   background-color: #ffcccc;
   color: #cc0000;
   text-align: center;
+  width: 100%;
 }
 
 /* Styling of the empty queue text */

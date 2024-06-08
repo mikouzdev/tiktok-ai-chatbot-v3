@@ -8,7 +8,9 @@
 
 //#region Imports
 import React, { useContext, useEffect, useState } from "react";
+import ModQueuePanel from "./ModQueuePanel";
 import { SocketContext } from "./SocketProvider";
+import TestCommentPanel from "./TestCommentPanel";
 //#endregion
 
 //css
@@ -40,6 +42,19 @@ function ModerationPanel() {
     }
   }, [socket]);
 
+  const getRoleLabel = (role) => {
+    switch (role) {
+      case 0:
+        return "Nonfollower";
+      case 1:
+        return "Follower";
+      case 2:
+        return "Friend";
+      default:
+        return "Unknown";
+    }
+  };
+
   const deleteComment = (index) => {
     fetch("/api/deleteComment", {
       method: "POST",
@@ -53,26 +68,13 @@ function ModerationPanel() {
         if (data.success) {
           // The queue will be updated automatically via the socket update
         } else {
-          setError("Failed to delete the comment.");
+          setError("Failed to delete the comment");
         }
       })
       .catch((error) => {
         console.error("Error deleting comment:", error);
         setError("Failed to delete the comment. Please try again later.");
       });
-  };
-
-  const getRoleLabel = (role) => {
-    switch (role) {
-      case 0:
-        return "Nonfollower";
-      case 1:
-        return "Follower";
-      case 2:
-        return "Friend";
-      default:
-        return "Unknown";
-    }
   };
 
   // Function to generate a random comment item for testing purposes
@@ -106,41 +108,15 @@ function ModerationPanel() {
 
   return (
     <div className="mod-panel-site">
-      <div className="mod-queue-panel">
-        <h1 className="mod-queue-panel-title">Comment queue</h1>
-        {error && <p className="error">{error}</p>}
-        {queueList.length === 0 ? (
-          <p className="empty-queue">The queue is empty.</p>
-        ) : (
-          <ul className="queue-list">
-            {queueList.map((item, index) => (
-              <li key={index} className="queue-item">
-                <div className="queue-item-a">
-                  <div className="queue-item-b">
-                    <strong className="mod-panel-user">{item.user}</strong>
-                    <span className="mod-panel-role">
-                      {getRoleLabel(item.followRole)}
-                    </span>
-                  </div>
-                  <span className="mod-panel-comment">{item.comment}</span>
-                </div>
-
-                <button
-                  onClick={() => deleteComment(index)}
-                  className="delete-button"
-                >
-                  🗑️
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        {/* Button to add a random comment item for testing */}
-        <button onClick={addRandomComment} className="add-random-button">
-          Add Random Comment
-        </button>
-      </div>
+      <ModQueuePanel
+        queueList={queueList}
+        error={error}
+        deleteComment={deleteComment}
+        addRandomComment={addRandomComment}
+        getRoleLabel={getRoleLabel}
+      />
       {/* Test */}
+      <TestCommentPanel />
     </div>
   );
 }

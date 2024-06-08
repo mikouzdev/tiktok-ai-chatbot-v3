@@ -38,9 +38,8 @@ const MainSite = () => {
 
   const handleInputChange = (event) => {
     setUsername(event.target.value);
-
-    addMessageToChat("testi", "testi kommentti", "0", "comment");
-    addMessageToChat("AI", "testi vastaus", "0", "answer");
+    // addMessageToChat("testi", "testi kommentti", "0", "comment");
+    // addMessageToChat("AI", "testi vastaus", "0", "answer");
   };
 
   const handleStart = (event) => {
@@ -95,6 +94,7 @@ const MainSite = () => {
     }
   }, [socket, handleConnectionStatus]);
 
+  // Handling comment
   useEffect(() => {
     if (socket) {
       const handleComment = (data) => {
@@ -107,14 +107,17 @@ const MainSite = () => {
           );
         }
       };
+
+      // Start handling comment after received "Comment"
       socket.on("Comment", handleComment);
 
       return () => {
         socket.off("Comment", handleComment);
       };
     }
-  }, [socket, addMessageToChat]);
+  }, [socket, addMessageToChat]); // Add addMessageToChat to the dependency array
 
+  // Handling AIs answer
   useEffect(() => {
     if (socket) {
       const handleAnswer = (data) => {
