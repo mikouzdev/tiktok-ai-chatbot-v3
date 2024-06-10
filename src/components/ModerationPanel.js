@@ -1,7 +1,7 @@
 /**
  *
- *  This component renders a moderation panel "page" for managing the tiktok live comment queue.
- *  It receives queue updates from the server via a socket connection and allows deleting comments.
+ *  This component renders a moderation panel "page" for managing the tiktok live comment moderation.
+ *  It receives queue updates from the server via a socket connection and allows deleting comments & adding test comments.
  *  Route: /moderation
  *
  */
@@ -54,6 +54,7 @@ function ModerationPanel() {
         return "Unknown";
     }
   };
+  // Handle the deletion of a comment from the queue
 
   const deleteComment = (index) => {
     fetch("/api/deleteComment", {
@@ -77,7 +78,7 @@ function ModerationPanel() {
       });
   };
 
-  // Function to generate a random comment item for testing purposes
+  // Function to generate a random comment on the queue for testing purposes (to see styling and functionality)
   const generateRandomComment = () => {
     const users = ["User1", "User2", "User3", "User4", "User5"];
     const comments = [
@@ -101,9 +102,9 @@ function ModerationPanel() {
   };
 
   // Function to add a random comment item to the queue
-  const addRandomComment = () => {
-    const randomComment = generateRandomComment();
-    setQueueList((prevQueue) => [...prevQueue, randomComment]);
+  const addRandomCommentToQueue = () => {
+    const randomComment = generateRandomComment(); // Generate a random comment item
+    setQueueList((prevQueue) => [...prevQueue, randomComment]); // Add the random comment to the queue
   };
 
   return (
@@ -112,7 +113,7 @@ function ModerationPanel() {
         queueList={queueList}
         error={error}
         deleteComment={deleteComment}
-        addRandomComment={addRandomComment}
+        addRandomComment={addRandomCommentToQueue}
         getRoleLabel={getRoleLabel}
       />
       {/* Test */}

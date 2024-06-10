@@ -46,7 +46,7 @@ Stylesheet of the moderation page.
 .mod-comment-title {
   text-align: center;
   color: #ffffff;
-  background-color: #50514f;
+  background: linear-gradient(90deg, #444444, #282828);
   border-radius: 15px;
   width: 100%;
   padding: 0.33em;
@@ -77,7 +77,7 @@ select {
 .mod-queue-panel-title {
   text-align: center;
   color: #ffffff;
-  background-color: #50514f;
+  background: linear-gradient(90deg, #444444, #282828);
   border-radius: 15px;
   padding: 0.33em;
 }

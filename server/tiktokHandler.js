@@ -15,17 +15,14 @@ let allowCommentProcessing = true;
 let prevComment;
 const useTextToSpeech = config.useTextToSpeech;
 
-// Data structure to store user comments
-let userComments = {};
-// Load user comments
-loadUserComments();
-// Set interval to loop remove duplicate comments every 3 minutes from the json file
-setInterval(removeDuplicateComments, 180000); // 180000 milliseconds = 3 minutes
+let userComments = {}; // Data structure to store user comments
+loadUserComments(); // Load user comments from a JSON file on startup
+setInterval(removeDuplicateComments, 180000); // Remove duplicate comments every 3 minutes
 
-// Function to initialize the socket connection and event handlers
-const initialize = (socket, io) => {
-  // Example call to the function
+//#region Connections and initialization
 
+// Initialize the socket connection
+const initialize = (socket) => {
   socket.on("TikTokUsername", (data) => handleUsername(data, socket));
   socket.on("TikTokDisconnect", () => handleTikTokDisconnect(socket));
 
@@ -34,20 +31,19 @@ const initialize = (socket, io) => {
     handleTikTokDisconnect(socket);
   });
 
-  // Handle when text to speech finished playing
   socket.on("TextToSpeechFinished", () => {
+    // Handle the text-to-speech finished event
     handleTextToSpeechFinished(socket);
   });
 };
 
-//#region Connections
-// Function to handle the TikTok live connection and its configuration
+// Handle the connection to the TikTok live and the incoming comments
 const handleTikTokLiveConnection = (socket) => {
   socket.emit("ConnectionStatus", { type: "info", message: "Connecting..." });
 
-  // Disconnect previous if there is.
+  // Handle disconnection if there is already a connection to prevent multiple connections
   if (tiktokLiveConnection) {
-    tiktokLiveConnection.disconnect();
+    handleTikTokDisconnect();
     logger.info("Disconnected by new user.");
   }
 
@@ -77,13 +73,13 @@ const handleTikTokLiveConnection = (socket) => {
       });
     });
 
-  // Function to handle incoming chats
+  // On new comment event...
   tiktokLiveConnection.on("chat", (data) => {
     // Send the comment to handling with the neccesary parameters
     handleComment(data.uniqueId, data.comment, data.followRole, socket); // followRole: 0 = none; 1 = follower; 2 = friends
   });
 
-  // Function to log the disconnect event
+  // Log if the connection is disconnected from the tiktok live
   tiktokLiveConnection.on("disconnected", () =>
     logger.info("Disconnected from TikTok live")
   );
@@ -97,16 +93,17 @@ const handleTikTokLiveConnection = (socket) => {
 // Function to handle the tiktok disconnection
 const handleTikTokDisconnect = () => {
   if (tiktokLiveConnection) {
-    tiktokLiveConnection.disconnect();
-    commentQueue.clear();
+    tiktokLiveConnection.disconnect(); // Disconnect from the TikTok live
+    commentQueue.clear(); // Clear the comment queue
   }
-  allowCommentProcessing = true;
+  allowCommentProcessing = true; // Set comment processing back to true
 };
 //#endregion
 
 // Function to handle the incoming TikTok username
 const handleUsername = (incomingUsername, socket) => {
   if (!incomingUsername) {
+    // Check if the username is empty
     logger.info(`[SERVER]: TIKTOK USERNAME CANT BE EMPTY`);
     socket.emit("ConnectionStatus", {
       type: "error",
@@ -115,6 +112,7 @@ const handleUsername = (incomingUsername, socket) => {
     return;
   }
   if (incomingUsername.length < 4 || incomingUsername.length > 30) {
+    // Check if the username is too short or too long
     logger.info(`[SERVER]: TIKTOK USERNAME IS INVALID LENGTH`);
     socket.emit("ConnectionStatus", {
       type: "error",
@@ -123,16 +121,16 @@ const handleUsername = (incomingUsername, socket) => {
     return;
   }
 
-  // Format username correctly
+  // Check if the username starts with an @ symbol, if not, add it
   if (!incomingUsername.startsWith("@")) {
     incomingUsername = "@" + incomingUsername;
   }
 
-  tiktokUsername = incomingUsername;
-  handleTikTokLiveConnection(socket);
+  tiktokUsername = incomingUsername; // Set the TikTok username to the incoming username
+  handleTikTokLiveConnection(socket); // Handle the connection to the TikTok live
 };
 
-//#region Comment handling
+//#region Comment processing
 
 // Handling function of a test comment
 const handleTestComment = (user, comment, followRole, socket) => {
@@ -140,42 +138,42 @@ const handleTestComment = (user, comment, followRole, socket) => {
   handleComment(user, comment, followRole, socket);
 };
 
-// Step 1
-// Function to handle incoming comments
+// Step 1: Handle the comment
 const handleComment = (user, comment, followRole, socket) => {
   if (!commentRulesPassed(comment)) {
+    // Check if the comment passes the rules
     return;
   }
 
   logger.info(`Step 1: Handling comment from ${user}`);
 
-  // Adds comment to queue if another is being already processed.
+  // Adds comment to queue if another is being already processed, otherwise just process the comment.
   if (!allowCommentProcessing) {
-    const addedToQueue = commentQueue.enqueue({ user, comment, followRole });
+    // If comment processing is disabled (another comment is being processed)
+    const addedToQueue = commentQueue.enqueue({ user, comment, followRole }); // Add comment to queue
     if (!addedToQueue) {
-      logger.info("IGNORING COMMENT: Queue is full");
+      // If the comment was not added to the queue (queue is full)
+      logger.info("IGNORING COMMENT: Queue is full"); // Log that the comment was not added to the queue
     }
-    return;
+    return; // Return if the comment was not added to the queue (queue was full)
   }
 
   processComment(user, comment, followRole, socket);
 };
 
-// Step 2
-// Function to process a comment.
+// Step 2: Process the comment
 const processComment = (user, comment, followRole, socket) => {
   logger.info(`Step 2: Processing comment from ${user}`);
-  allowCommentProcessing = false;
-  prevComment = comment;
 
-  const formatedComment = `${user}: ${comment}`;
+  allowCommentProcessing = false; // Disable comment processing to prevent multiple comments being processed at the same time
+  prevComment = comment; // Set the previous comment to the current comment to prevent duplicate comments
+
+  const formattedComment = `${user}: ${comment}`; // Format the comment with the username and the comment (e.g. "username: comment")
   const pastCommentsString = getUserPastComments(user); // Retrieve and format past comments for the user
-  // logger.info(`Past comments from ${user}:`);
-  // logger.info(pastCommentsString);
 
-  // Handle sending comment to the GPT
+  // Sends the comment with the needed parameters to the GPT handler
   gptHandler.handleAnswer(
-    formatedComment,
+    formattedComment,
     followRole,
     pastCommentsString,
     socket,
@@ -188,7 +186,7 @@ const processComment = (user, comment, followRole, socket) => {
   // Add comment to comment history array
   addUserCommentToArray(user, comment);
 
-  // Emit comment to front
+  // Emits the comment to the frontend
   socket.emit("Comment", {
     type: "comment",
     commentUsername: user,
@@ -197,7 +195,35 @@ const processComment = (user, comment, followRole, socket) => {
   });
 };
 
-// Function to verify comments content follows certain set rules.
+// Step 3: Handle the text-to-speech finished event
+function handleTextToSpeechFinished(socket) {
+  allowCommentProcessing = true;
+  logger.info("Final step: Text-to-speech finished.");
+  checkQueueComments(socket);
+}
+
+// Step 4: Check the queue for comments
+function checkQueueComments(socket) {
+  if (commentQueue.size() > 0) {
+    // If there are comments in the queue
+    const nextComment = commentQueue.dequeue(); // Dequeue the next comment from the queue
+    logger.queue(
+      `Processing next: \nQueue size is now: ${commentQueue.size()}` // Log the next comment and the queue size
+    );
+    processComment(
+      // if there are comments in the queue, process the next comment
+      nextComment.user,
+      nextComment.comment,
+      nextComment.followRole,
+      socket
+    );
+  } else {
+    logger.queue("Queue is empty."); // If there are no comments in the queue, log that the queue is empty
+  }
+}
+//#endregion
+
+// Handles checking if the comment passes the rules then returns a boolean
 function commentRulesPassed(comment) {
   if (
     comment.startsWith("@") || // To verify comment isnt a reply
@@ -211,30 +237,9 @@ function commentRulesPassed(comment) {
     return true;
   }
 }
-//#endregion
 
-// Function to handle what to do when text to speech has finished playing
-function handleTextToSpeechFinished(socket) {
-  allowCommentProcessing = true;
-  logger.info("Final step: Text-to-speech finished.");
-
-  // Start processing queue after tts; if there is a queue.
-  // Check if there is a queue
-  if (commentQueue.size() > 0) {
-    const nextComment = commentQueue.dequeue(); // Get the next comment from the queue
-    logger.queue(
-      `Processing next: \nQueue size is now: ${commentQueue.size()}`
-    );
-    processComment(
-      nextComment.user,
-      nextComment.comment,
-      nextComment.followRole,
-      socket
-    );
-  }
-}
-
-// Function to handle fetcing the users past comments
+//#region User comment history functions
+//Function to get the past comments from a user
 const getUserPastComments = (user) => {
   if (userComments[user]) {
     const pastComments = userComments[user];
@@ -247,7 +252,7 @@ const getUserPastComments = (user) => {
   }
 };
 
-// Handle adding the incoming comment to the comment history
+// Handles adding a user comment to the userComments data structure
 function addUserCommentToArray(user, comment) {
   // Update user comments data structure
   if (!userComments[user]) {
@@ -259,7 +264,7 @@ function addUserCommentToArray(user, comment) {
   saveUserComments();
 }
 
-// Function to save the user comments to a JSON file (to keep a history on the past comments)
+// Handles saving user comments to a JSON file
 function saveUserComments() {
   try {
     fs.writeFileSync(
@@ -273,7 +278,7 @@ function saveUserComments() {
   }
 }
 
-// Function to load user comments from a JSON file and assigning them to memory (userComments variable)
+// Handles loading user comments from a JSON file and storing them in the userComments data structure
 function loadUserComments() {
   const filePath = path.join(__dirname, "./data/userComments.json");
   if (fs.existsSync(filePath)) {
@@ -288,5 +293,6 @@ function loadUserComments() {
     console.warn("User comments file does not exist.");
   }
 }
+//#endregion
 
 module.exports = { initialize, handleTestComment };
