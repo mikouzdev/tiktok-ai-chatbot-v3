@@ -51,25 +51,23 @@ app.post("/api/deleteComment", (req, res) => {
   }
 });
 
-// Function to handle receiving and logging test comments
+// function to handle the api calls of adding a test comment
 app.post("/api/testComment", (req, res) => {
   const { user, comment, followRole } = req.body;
   if (user && comment && followRole !== undefined) {
-    // Log the received test comment data
-    // logger.info(
-    //   `[TEST COMMENT]: User: ${user}, Comment: ${comment}, Follow Role: ${followRole}`
-    // );
-
     tiktokHandler.handleTestComment(user, comment, followRole, io); // io as the socket object
 
+    logger.info("Test comment received successfully");
     // Send a success response
     res.json({ success: true, message: "Test comment received successfully" });
   } else {
     // Send an error response if required data is missing
     res.status(400).json({ success: false, message: "Missing required data" });
+    logger.error("Missing required data for test comment");
   }
 });
 
+// on connection, initialize the tiktok handler and send the current queue
 io.on("connection", (socket) => {
   logger.info(`[SERVER]: Connection established`);
   tiktokHandler.initialize(socket, io);

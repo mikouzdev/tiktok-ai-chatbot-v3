@@ -24,13 +24,12 @@ const messagePrompts = {
 const handleAnswer = async (
   question,
   followRole,
-  pastCommentsString,
   socket,
   useTextToSpeech,
   callback
 ) => {
   try {
-    const result = await callGptApi(followRole, question, pastCommentsString);
+    const result = await callGptApi(followRole, question);
     socket.emit("Answer", result);
 
     if (!useTextToSpeech) {
@@ -43,12 +42,10 @@ const handleAnswer = async (
 
 //#region Main functions
 // Function to handle fetching the gpt output
-async function callGptApi(followRole, question, pastCommentsString) {
+async function callGptApi(followRole, question) {
   const systemMessage = generateSystemMessage(followRole);
-  const finalPrompt = `${systemMessage}\n#USERS PAST COMMENTS:\n${pastCommentsString}#`;
+  const finalPrompt = `${systemMessage}\n`;
   const randomTemp = Math.random(0.85, 1);
-
-  // console.log(`|---\n${finalPrompt}\n---|`);
 
   try {
     const response = await openai.chat.completions.create({

@@ -5,8 +5,7 @@ const logger = require("../utils/logger.js");
 const commentQueue = require("./commentQueue.js");
 const gptHandler = require("./gptHandler.js");
 const config = require("../config/config.js");
-const path = require("path");
-const fs = require("fs");
+
 const { removeDuplicateComments } = require("./duplicateRemover");
 
 let tiktokLiveConnection;
@@ -15,8 +14,6 @@ let allowCommentProcessing = true;
 let prevComment;
 const useTextToSpeech = config.useTextToSpeech;
 
-let userComments = {}; // Data structure to store user comments
-loadUserComments(); // Load user comments from a JSON file on startup
 setInterval(removeDuplicateComments, 180000); // Remove duplicate comments every 3 minutes
 
 //#region Connections and initialization
@@ -169,22 +166,18 @@ const processComment = (user, comment, followRole, socket) => {
   prevComment = comment; // Set the previous comment to the current comment to prevent duplicate comments
 
   const formattedComment = `${user}: ${comment}`; // Format the comment with the username and the comment (e.g. "username: comment")
-  const pastCommentsString = getUserPastComments(user); // Retrieve and format past comments for the user
 
   // Sends the comment with the needed parameters to the GPT handler
   gptHandler.handleAnswer(
     formattedComment,
     followRole,
-    pastCommentsString,
+
     socket,
     useTextToSpeech,
     () => {
       allowCommentProcessing = true;
     }
   );
-
-  // Add comment to comment history array
-  addUserCommentToArray(user, comment);
 
   // Emits the comment to the frontend
   socket.emit("Comment", {
@@ -237,62 +230,5 @@ function commentRulesPassed(comment) {
     return true;
   }
 }
-
-//#region User comment history functions
-//Function to get the past comments from a user
-const getUserPastComments = (user) => {
-  if (userComments[user]) {
-    const pastComments = userComments[user];
-    const formattedComments = pastComments
-      .map((comment, index) => `${index + 1}: ${comment}`)
-      .join("\n");
-    return formattedComments;
-  } else {
-    return "No past comments from this user.";
-  }
-};
-
-// Handles adding a user comment to the userComments data structure
-function addUserCommentToArray(user, comment) {
-  // Update user comments data structure
-  if (!userComments[user]) {
-    userComments[user] = [];
-  }
-  userComments[user].push(comment);
-
-  // Save user comments to a JSON file
-  saveUserComments();
-}
-
-// Handles saving user comments to a JSON file
-function saveUserComments() {
-  try {
-    fs.writeFileSync(
-      path.join(__dirname, "./data/userComments.json"),
-      JSON.stringify(userComments, null, 2),
-      "utf-8"
-    );
-    logger.info("-- User comments successfully saved --");
-  } catch (error) {
-    console.error("Error saving user comments:", error);
-  }
-}
-
-// Handles loading user comments from a JSON file and storing them in the userComments data structure
-function loadUserComments() {
-  const filePath = path.join(__dirname, "./data/userComments.json");
-  if (fs.existsSync(filePath)) {
-    try {
-      const data = fs.readFileSync(filePath, "utf-8");
-      userComments = JSON.parse(data);
-      logger.info("-- User comments successfully loaded --");
-    } catch (error) {
-      console.error("Error loading user comments:", error);
-    }
-  } else {
-    console.warn("User comments file does not exist.");
-  }
-}
-//#endregion
 
 module.exports = { initialize, handleTestComment };

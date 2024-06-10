@@ -11,7 +11,7 @@ Stylesheet of the moderation page.
   flex-direction: row;
   gap: 1.33em;
   padding: 1.33em;
-  background-color: #ffca5f;
+  background-color: #141414;
   overflow-y: auto;
 }
 
@@ -25,10 +25,9 @@ Stylesheet of the moderation page.
   width: 50em;
   height: fit-content;
   padding: 1em;
-  background-color: #f5f5f5;
+  background-color: #2c2c2c;
   border-radius: 8px;
   box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.13);
-  border: 2px solid red;
 }
 
 .mod-comment-panel {
@@ -39,19 +38,20 @@ Stylesheet of the moderation page.
   align-items: center;
   gap: 0.5em;
   height: fit-content;
-  background-color: #f5f5f5;
-  border: 2px solid red;
+  background-color: #2c2c2c;
 }
 
 .mod-comment-title {
   text-align: center;
   color: #ffffff;
-  background: linear-gradient(90deg, #444444, #282828);
+  background: linear-gradient(180deg, #444444, #282828);
+  border: 1px solid #868686;
   border-radius: 15px;
   width: 100%;
   padding: 0.33em;
 }
 
+/* holds fields for username, comment, follow role, submit */
 .mod-comment-inside {
   width: 100%;
   display: flex;
@@ -77,9 +77,10 @@ select {
 .mod-queue-panel-title {
   text-align: center;
   color: #ffffff;
-  background: linear-gradient(90deg, #444444, #282828);
+  background: linear-gradient(180deg, #444444, #282828);
   border-radius: 15px;
   padding: 0.33em;
+  border: 1px solid #868686;
 }
 
 .error {
@@ -113,13 +114,12 @@ select {
   flex-wrap: nowrap;
 
   gap: 0.5em;
-  padding: 0.5em;
+  padding: 0.75em;
   align-items: stretch;
   border-radius: 10px;
   height: max-content;
 
-  background-color: #e8f0fe;
-  border: 1px solid #dcdcdc;
+  background: linear-gradient(90deg, #141414, #282828);
 
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.13);
 }
@@ -137,7 +137,7 @@ select {
   width: 100%;
 }
 
-/* Username & role */
+/* containere for Username & role */
 .queue-item-b {
   display: flex;
   flex-direction: row;
@@ -152,7 +152,7 @@ select {
   flex: 2;
   color: #ffffff;
   padding: 0.25em;
-  background-color: #5d5f5d;
+  background: linear-gradient(180deg, #454545, #282828);
   text-align: center;
   border-radius: 10px;
   height: fit-content;
@@ -161,28 +161,27 @@ select {
 /* Styling of queue list item: role */
 .queue-item .mod-panel-role {
   flex: 1;
-  background-color: #ff9b42;
+  background: linear-gradient(180deg, #fe9b69, #d74e09);
   padding: 0.25em;
   text-align: center;
   border-radius: 10px;
   height: fit-content;
-
-  box-shadow: 0 0 5px 1px #fff;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.25);
 }
 
 /* Styling of queue list item: comment */
 .queue-item .mod-panel-comment {
-  background-color: #50514f;
+  background: linear-gradient(180deg, #3c3c3c, #282828);
   text-align: center;
   padding: 0.75em;
   width: 100%;
-
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
 }
 
 /* Styling of queue list item: delete button */
 .queue-item .delete-button {
-  background-color: #ca4e55;
+  background: linear-gradient(90deg, #ac5959, #8c3c3c);
   color: white;
   border: none;
   padding: 5px 10px;
@@ -190,10 +189,6 @@ select {
   cursor: pointer;
   transition: background-color 0.3s ease;
   flex: 1;
-
   text-align: center;
-}
-
-.queue-item .delete-button:hover {
-  background-color: #fe8a7e;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.25);
 }

@@ -33,7 +33,7 @@ const MainSite = () => {
         return newMessages;
       });
     },
-    []
+    [setMessages, setIsTyping]
   );
 
   const handleInputChange = (event) => {
