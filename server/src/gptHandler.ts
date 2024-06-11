@@ -1,7 +1,7 @@
-const logger = require("../utils/logger.js");
-const OpenAI = require("openai");
+export const logger = require("../utils/logger.js");
 require("dotenv").config();
 
+const { OpenAI } = require("openai");
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -21,20 +21,10 @@ const messagePrompts = {
 };
 // #endregion
 
-const handleAnswer = async (
-  question,
-  followRole,
-  socket,
-  useTextToSpeech,
-  callback
-) => {
+export const handleAnswer = async (question, followRole, socket) => {
   try {
     const result = await callGptApi(followRole, question);
     socket.emit("Answer", result);
-
-    if (!useTextToSpeech) {
-      setTimeout(callback, 10);
-    }
   } catch (err) {
     logger.error("Error handling answer:", err);
   }
@@ -45,7 +35,6 @@ const handleAnswer = async (
 async function callGptApi(followRole, question) {
   const systemMessage = generateSystemMessage(followRole);
   const finalPrompt = `${systemMessage}\n`;
-  const randomTemp = Math.random(0.85, 1);
 
   try {
     const response = await openai.chat.completions.create({
@@ -55,7 +44,7 @@ async function callGptApi(followRole, question) {
         { role: "user", content: question },
       ],
       max_tokens: 120,
-      temperature: randomTemp,
+      temperature: 1,
     });
     return response.choices[0].message.content;
   } catch (error) {

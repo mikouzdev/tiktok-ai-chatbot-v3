@@ -1,18 +1,16 @@
 // tiktokHandler.js
 
-const { WebcastPushConnection } = require("tiktok-live-connector");
-const logger = require("../utils/logger.js");
-const commentQueue = require("./commentQueue.js");
-const gptHandler = require("./gptHandler.js");
-const config = require("../config/config.js");
-
-const { removeDuplicateComments } = require("./duplicateRemover");
+import { WebcastPushConnection } from "tiktok-live-connector";
+import { config } from "./config/config";
+import { removeDuplicateComments } from "./duplicateRemover.js";
+import commentQueue = require("./commentQueue.js");
+import gptHandler = require("./gptHandler.js");
+import logger = require("../utils/logger.js");
 
 let tiktokLiveConnection;
-let tiktokUsername;
-let allowCommentProcessing = true;
-let prevComment;
-const useTextToSpeech = config.useTextToSpeech;
+let tiktokUsername: string;
+let allowCommentProcessing: boolean = true;
+let prevComment: string;
 
 setInterval(removeDuplicateComments, 180000); // Remove duplicate comments every 3 minutes
 
@@ -21,11 +19,11 @@ setInterval(removeDuplicateComments, 180000); // Remove duplicate comments every
 // Initialize the socket connection
 const initialize = (socket) => {
   socket.on("TikTokUsername", (data) => handleUsername(data, socket));
-  socket.on("TikTokDisconnect", () => handleTikTokDisconnect(socket));
+  socket.on("TikTokDisconnect", () => handleTikTokDisconnect());
 
   socket.on("disconnect", () => {
     logger.info("User disconnected from socket.");
-    handleTikTokDisconnect(socket);
+    handleTikTokDisconnect();
   });
 
   socket.on("TextToSpeechFinished", () => {
@@ -70,7 +68,7 @@ const handleTikTokLiveConnection = (socket) => {
       });
     });
 
-  // On new comment event...
+  // On a new comment event...
   tiktokLiveConnection.on("chat", (data) => {
     // Send the comment to handling with the neccesary parameters
     handleComment(data.uniqueId, data.comment, data.followRole, socket); // followRole: 0 = none; 1 = follower; 2 = friends
@@ -168,16 +166,7 @@ const processComment = (user, comment, followRole, socket) => {
   const formattedComment = `${user}: ${comment}`; // Format the comment with the username and the comment (e.g. "username: comment")
 
   // Sends the comment with the needed parameters to the GPT handler
-  gptHandler.handleAnswer(
-    formattedComment,
-    followRole,
-
-    socket,
-    useTextToSpeech,
-    () => {
-      allowCommentProcessing = true;
-    }
-  );
+  gptHandler.handleAnswer(formattedComment, followRole, socket);
 
   // Emits the comment to the frontend
   socket.emit("Comment", {
@@ -198,20 +187,21 @@ function handleTextToSpeechFinished(socket) {
 // Step 4: Check the queue for comments
 function checkQueueComments(socket) {
   if (commentQueue.size() > 0) {
-    // If there are comments in the queue
-    const nextComment = commentQueue.dequeue(); // Dequeue the next comment from the queue
-    logger.queue(
-      `Processing next: \nQueue size is now: ${commentQueue.size()}` // Log the next comment and the queue size
-    );
-    processComment(
-      // if there are comments in the queue, process the next comment
-      nextComment.user,
-      nextComment.comment,
-      nextComment.followRole,
-      socket
-    );
+    const nextComment = commentQueue.dequeue();
+    if (nextComment) {
+      // Check if nextComment is not undefined
+      logger.queue(
+        `Processing next: \nQueue size is now: ${commentQueue.size()}`
+      );
+      processComment(
+        nextComment.user,
+        nextComment.comment,
+        nextComment.followRole,
+        socket
+      );
+    }
   } else {
-    logger.queue("Queue is empty."); // If there are no comments in the queue, log that the queue is empty
+    logger.queue("Queue is empty.");
   }
 }
 //#endregion

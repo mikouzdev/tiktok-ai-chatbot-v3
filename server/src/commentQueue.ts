@@ -1,8 +1,7 @@
-const logger = require("../utils/logger.js");
-
-let queue = []; // Initialize an empty queue
+export const logger = require("../utils/logger.js");
+export let queue: { user: string; comment: string; followRole: number }[] = []; // Initialize an empty queue
 const maxSize = 10; // Maximum size of the queue
-let io = null;
+let io: any = null;
 
 // Function to initialize the socket.io object for emitting queue updates
 const initialize = (socketIo) => {
@@ -16,7 +15,7 @@ const emitQueueUpdate = () => {
 };
 
 // Function to add a comment to the queue
-const enqueue = (comment) => {
+export const enqueue = (comment) => {
   if (queue.length < maxSize) {
     // Check if queue not full
     queue.push(comment); // Add comment to queue
@@ -29,26 +28,26 @@ const enqueue = (comment) => {
 };
 
 // handles moving the queue forward
-const dequeue = () => {
+export const dequeue = () => {
   const removedItem = queue.shift();
   emitQueueUpdate();
   return removedItem;
 };
 
-const size = () => queue.length; // Function to get the current queue size
+export const size = () => queue.length; // Function to get the current queue size
 
 // Function to clear the queue fully
-const clear = () => {
+export const clear = () => {
   queue = [];
   logger.info("Queue cleared!");
   emitQueueUpdate();
 };
 
 // Function that returns current queue data
-const getQueue = () => queue;
+export const getQueue = () => queue;
 
 // handles deleting a comment from the queue
-const deleteComment = (index) => {
+export const deleteComment = (index) => {
   // Check if the index is a valid number
   if (typeof index !== "number" || isNaN(index)) {
     console.error("Invalid index. Index must be a valid number.");
@@ -70,7 +69,7 @@ const deleteComment = (index) => {
     return true;
   } catch (error) {
     // Handle any errors that may occur during the splice operation or logging
-    console.error("Error deleting comment:", error.message);
+    console.error("Error deleting comment:", error);
     return false;
   }
 };

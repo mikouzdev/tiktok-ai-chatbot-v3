@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
+export const fs = require("fs");
+export const path = require("path");
 
 // Function to remove duplicate comments from the userComments object
-function removeDuplicateComments() {
+export function removeDuplicateComments() {
   // Load the current user comments
   const filePath = path.join(__dirname, "./data/userComments.json");
   if (!fs.existsSync(filePath)) {
