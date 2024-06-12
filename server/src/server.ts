@@ -1,6 +1,4 @@
 // server.js
-
-require("dotenv").config();
 export const express = require("express");
 export const http = require("http");
 export const socketio = require("socket.io");
@@ -9,6 +7,8 @@ export const tiktokHandler = require("./tiktokHandler");
 export const ttsHandler = require("./ttsHandler");
 export const queue = require("./commentQueue.js"); // Import your queue module
 export const cors = require("cors");
+
+require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);

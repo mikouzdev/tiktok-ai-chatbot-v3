@@ -1,4 +1,3 @@
-import { config } from "./config/config";
 export const { promisify } = require("util");
 export const fs = require("fs");
 export const writeFile = promisify(fs.writeFile);

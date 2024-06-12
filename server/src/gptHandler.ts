@@ -21,9 +21,13 @@ const messagePrompts = {
 };
 // #endregion
 
-export const handleAnswer = async (question, followRole, socket) => {
+export const handleAnswer = async (
+  question: string,
+  followRole: number,
+  socket: any
+) => {
   try {
-    const result = await callGptApi(followRole, question);
+    const result: string = await callGPT(followRole, question);
     socket.emit("Answer", result);
   } catch (err) {
     logger.error("Error handling answer:", err);
@@ -32,7 +36,7 @@ export const handleAnswer = async (question, followRole, socket) => {
 
 //#region Main functions
 // Function to handle fetching the gpt output
-async function callGptApi(followRole, question) {
+async function callGPT(followRole: number, question: string) {
   const systemMessage = generateSystemMessage(followRole);
   const finalPrompt = `${systemMessage}\n`;
 
@@ -54,7 +58,7 @@ async function callGptApi(followRole, question) {
 }
 
 // Helper function to generate a system message based on followRole
-function generateSystemMessage(followRole) {
+function generateSystemMessage(followRole: number) {
   switch (followRole) {
     case 0: // General user
       return messagePrompts.generalUser;

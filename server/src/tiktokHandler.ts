@@ -2,7 +2,6 @@
 
 import { WebcastPushConnection } from "tiktok-live-connector";
 import { config } from "./config/config";
-import { removeDuplicateComments } from "./duplicateRemover.js";
 import commentQueue = require("./commentQueue.js");
 import gptHandler = require("./gptHandler.js");
 import logger = require("../utils/logger.js");
@@ -12,11 +11,9 @@ let tiktokUsername: string;
 let allowCommentProcessing: boolean = true;
 let prevComment: string;
 
-setInterval(removeDuplicateComments, 180000); // Remove duplicate comments every 3 minutes
-
 //#region Connections and initialization
 
-// Initialize the socket connection
+// Initialize the socket connection for the TikTok live
 const initialize = (socket) => {
   socket.on("TikTokUsername", (data) => handleUsername(data, socket));
   socket.on("TikTokDisconnect", () => handleTikTokDisconnect());
@@ -126,7 +123,6 @@ const handleUsername = (incomingUsername, socket) => {
 };
 
 //#region Comment processing
-
 // Handling function of a test comment
 const handleTestComment = (user, comment, followRole, socket) => {
   logger.info("Handling a test comment.");
@@ -181,11 +177,11 @@ const processComment = (user, comment, followRole, socket) => {
 function handleTextToSpeechFinished(socket) {
   allowCommentProcessing = true;
   logger.info("Final step: Text-to-speech finished.");
-  checkQueueComments(socket);
+  checkQueueForComments(socket);
 }
 
 // Step 4: Check the queue for comments
-function checkQueueComments(socket) {
+function checkQueueForComments(socket) {
   if (commentQueue.size() > 0) {
     const nextComment = commentQueue.dequeue();
     if (nextComment) {
