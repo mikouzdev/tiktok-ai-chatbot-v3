@@ -1,23 +1,26 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 
-import Chat from "./Chat";
+import ChatContainer from "./ChatContainer";
+import "./css/MainSite.css";
 import InputContainer from "./InputContainer";
 import SiteContainer from "./SiteContainer";
 import { SocketContext } from "./SocketProvider";
+import TypingIndicator from "./TypingIndicator";
 import UsernameInput from "./UsernameInput";
-import "./css/MainSite.css";
 
-const MAX_MESSAGES = 2;
+const MAX_MESSAGES = 2; // Maximum amount of messages to show in chat
 
 const MainSite = () => {
   const socket = useContext(SocketContext);
-  const [connectionStatus, setConnectionStatus] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState(""); // Connection status
+  const [isConnectedToTikTok, setIsConnectedToLive] = useState(false); // TikTok live connection status
+  const [isConnectedToSocket, setIsConnectedToSocket] = useState(false); // Socket connection status
+  const [isTyping, setIsTyping] = useState(false);
   const [username, setUsername] = useState("");
   const [messages, setMessages] = useState([]);
   const [audio, setAudio] = useState(null);
-  const [isTyping, setIsTyping] = useState(false);
 
+  // handle adding a message to chat
   const addMessageToChat = useCallback(
     (username, commentText, followRole, className) => {
       setMessages((prevMessages) => {
@@ -29,7 +32,7 @@ const MainSite = () => {
                 { username, commentText, followRole, className },
               ];
 
-        setIsTyping(newMessages.length === 1);
+        setIsTyping(newMessages.length === 1); // Set isTyping to true if there is only one message
 
         return newMessages;
       });
@@ -37,34 +40,46 @@ const MainSite = () => {
     [setMessages, setIsTyping]
   );
 
+  // handles input change for tiktok live username
   const handleInputChange = (event) => {
     setUsername(event.target.value);
     // addMessageToChat("testi", "testi kommentti", "0", "comment");
     // addMessageToChat("AI", "testi vastaus", "0", "answer");
   };
 
+  // handles tiktok live connection
   const handleStart = (event) => {
-    event.preventDefault();
-    socket.emit("TikTokUsername", username);
-    setUsername("");
+    event.preventDefault(); // Prevent form submission
+    if (!isConnectedToSocket) {
+      // Check if not connected to socket
+      setIsConnectedToSocket("Not connected to socket");
+      return;
+    }
+
+    socket.emit("TikTokUsername", username); // Emit username to server
+    setUsername(""); // clear username input field
   };
 
+  // handles disconnection from tiktok live
   const handleDisconnect = () => {
     if (audio) {
-      audio.pause(); // Stop audio if playing
+      audio.pause(); // Stop audio when disconnecting
     }
-    setMessages([]);
-    setConnectionStatus("");
-    setIsConnected(false);
-    socket.emit("TikTokDisconnect");
+
+    setMessages([]); // Clear messages
+    setConnectionStatus(""); // Clear connection status
+    setIsConnectedToLive(false); // Set connection status to false
+    socket.emit("DisconnectFromTikTok"); // emit the disconnection event to server
   };
 
+  // handle fetching audio and playing it
   const fetchAudioAndPlay = useCallback(
     async (text) => {
       try {
         const response = await fetch(
           `/api/audio?text=${encodeURIComponent(text)}`
         );
+
         const blob = await response.blob();
         const audio = new Audio(URL.createObjectURL(blob));
 
@@ -84,22 +99,33 @@ const MainSite = () => {
     [addMessageToChat, socket]
   );
 
-  const handleConnectionStatus = useCallback((data) => {
+  // handle live connection status text
+  const updateLiveConnectionStatus = useCallback((data) => {
     const { type, message } = data;
     setConnectionStatus(`${type}: ${message}`);
-    setIsConnected(type === "success");
+    setIsConnectedToLive(type === "success");
   }, []);
 
+  // useEffect to handle tiktok live connection status
   useEffect(() => {
     if (socket) {
-      socket.on("ConnectionStatus", handleConnectionStatus);
+      socket.on("ConnectionStatus", updateLiveConnectionStatus);
       return () => {
-        socket.off("ConnectionStatus", handleConnectionStatus);
+        socket.off("ConnectionStatus", updateLiveConnectionStatus);
       };
     }
-  }, [socket, handleConnectionStatus]);
+  }, [socket, updateLiveConnectionStatus]);
 
-  // Handling comment
+  // useEffect to handle socket connection
+  useEffect(() => {
+    if (socket) {
+      socket.on("SocketIsConnected", () => {
+        setIsConnectedToSocket(true);
+      });
+    }
+  });
+
+  // handle comment
   useEffect(() => {
     if (socket) {
       const handleComment = (data) => {
@@ -122,7 +148,7 @@ const MainSite = () => {
     }
   }, [socket, addMessageToChat]); // Add addMessageToChat to the dependency array
 
-  // Handling AIs answer
+  // Handling GPTs answer
   useEffect(() => {
     if (socket) {
       const handleAnswer = (data) => {
@@ -138,10 +164,7 @@ const MainSite = () => {
 
   return (
     <div>
-      <SiteContainer
-        className="body-container"
-        connectionStatus={connectionStatus}
-      >
+      <SiteContainer className="body-container">
         <InputContainer className="top-container">
           <UsernameInput
             username={username}
@@ -149,16 +172,21 @@ const MainSite = () => {
             handleStart={handleStart}
             handleDisconnect={handleDisconnect}
             connectionStatus={connectionStatus}
-            isConnected={isConnected}
+            isConnected={isConnectedToTikTok}
           />
         </InputContainer>
-        <Chat className="chat-container" id="chats" messages={messages}>
-          {isTyping && (
+        <ChatContainer
+          className="chat-container"
+          id="chats"
+          messages={messages}
+        >
+          {/* {isTyping && (
             <div className="typing-indicator-container">
               <b className="typing-indicator">.</b>
             </div>
-          )}
-        </Chat>
+          )} */}
+          <TypingIndicator isTyping={isTyping} />
+        </ChatContainer>
       </SiteContainer>
     </div>
   );

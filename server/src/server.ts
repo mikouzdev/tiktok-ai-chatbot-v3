@@ -8,8 +8,6 @@ export const ttsHandler = require("./ttsHandler");
 export const queue = require("./commentQueue.js"); // Import your queue module
 export const cors = require("cors");
 
-require("dotenv").config();
-
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server, {
@@ -30,6 +28,9 @@ app.use(
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+queue.initialize(io); // Initialize the queue module with the socket object
+// queue.simulateQueueData();
 
 // Function to handle the api call of the tts
 app.get("/api/audio", ttsHandler.handleAudioRequest);
@@ -67,15 +68,21 @@ app.post("/api/testComment", (req, res) => {
   }
 });
 
-// on connection, initialize the tiktok handler and send the current queue
+// on socket connection, initialize the tiktok handler and send the current queue
 io.on("connection", (socket) => {
-  logger.info(`[SERVER]: Connection established`);
+  console.log(
+    `###\nSocket connected with id: ${socket.id}\nConnected clients count: ${io.engine.clientsCount}\n###`
+  );
   tiktokHandler.initialize(socket, io);
-  socket.emit("queueUpdate", queue.getQueue());
-});
+  socket.emit("queueUpdate", queue.getQueue()); // Send the current queue to the client
+  socket.emit("SocketIsConnected"); // Send a message to the client that the socket is connected
 
-queue.initialize(io);
-// queue.simulateQueueData();
+  socket.on("disconnect", (reason) => {
+    console.log(
+      `###\nSocket disconnected with id: ${socket.id}\nReason: ${reason}\nConnected clients count: ${io.engine.clientsCount}\n###`
+    );
+  });
+});
 
 const port = process.env.PORT || 3001;
 server.listen(port, () => {

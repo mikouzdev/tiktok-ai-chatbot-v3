@@ -16,12 +16,7 @@ let prevComment: string;
 // Initialize the socket connection for the TikTok live
 const initialize = (socket) => {
   socket.on("TikTokUsername", (data) => handleUsername(data, socket));
-  socket.on("TikTokDisconnect", () => handleTikTokDisconnect());
-
-  socket.on("disconnect", () => {
-    logger.info("User disconnected from socket.");
-    handleTikTokDisconnect();
-  });
+  socket.on("DisconnectFromTikTok", () => handleTikTokDisconnect());
 
   socket.on("TextToSpeechFinished", () => {
     // Handle the text-to-speech finished event

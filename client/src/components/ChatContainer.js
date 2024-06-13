@@ -1,6 +1,6 @@
 import React from "react";
 
-function Chat({ className, messages, children }) {
+function ChatContainer({ className, messages, children }) {
   return (
     <div className={className}>
       {messages.map((message, index) => (
@@ -25,4 +25,4 @@ function Chat({ className, messages, children }) {
   );
 }
 
-export default Chat;
+export default ChatContainer;
