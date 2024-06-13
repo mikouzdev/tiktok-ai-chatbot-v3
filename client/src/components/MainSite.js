@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
+
 import Chat from "./Chat";
 import InputContainer from "./InputContainer";
 import SiteContainer from "./SiteContainer";
@@ -50,7 +51,7 @@ const MainSite = () => {
 
   const handleDisconnect = () => {
     if (audio) {
-      audio.pause();
+      audio.pause(); // Stop audio if playing
     }
     setMessages([]);
     setConnectionStatus("");
@@ -65,12 +66,16 @@ const MainSite = () => {
           `/api/audio?text=${encodeURIComponent(text)}`
         );
         const blob = await response.blob();
-        const newAudio = new Audio(URL.createObjectURL(blob));
-        setAudio(newAudio);
-        newAudio.play();
-        addMessageToChat(`👽`, text, 3, "answer");
-        newAudio.addEventListener("ended", () => {
+        const audio = new Audio(URL.createObjectURL(blob));
+
+        addMessageToChat("👽", text, 3, "answer");
+
+        setAudio(audio); // Set audio to state
+        audio.play();
+
+        audio.addEventListener("ended", () => {
           socket.emit("TextToSpeechFinished");
+          setAudio(null); // Reset audio
         });
       } catch (error) {
         console.error("Error fetching audio:", error);

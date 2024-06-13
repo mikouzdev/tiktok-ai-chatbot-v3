@@ -32,7 +32,7 @@ app.use(
 app.use(express.json());
 
 // Function to handle the api call of the tts
-app.get("/api/audio", ttsHandler.handleAudioRequestNew);
+app.get("/api/audio", ttsHandler.handleAudioRequest);
 
 // Function to handle the api calls of removing a comment from the queue
 app.post("/api/deleteComment", (req, res) => {
