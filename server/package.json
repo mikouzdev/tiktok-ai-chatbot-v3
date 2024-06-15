@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@types/node": "^20.14.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "openai": "^4.51.0",
+    "socket.io": "^4.7.5",
+    "tiktok-live-connector": "^1.1.7"
+  }
+}
