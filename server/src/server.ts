@@ -77,7 +77,7 @@ io.on("connection", (socket) => {
   socket.emit("queueUpdate", queue.getQueue()); // Send the current queue to the client
   socket.emit("SocketIsConnected"); // Send a message to the client that the socket is connected
 
-  socket.on("disconnect", (reason) => {
+  socket.on("disconnect", (reason: any) => {
     console.log(
       `###\nSocket disconnected with id: ${socket.id}\nReason: ${reason}\nConnected clients count: ${io.engine.clientsCount}\n###`
     );

@@ -5,7 +5,7 @@
     "strict": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "noImplicitAny": false
+    "noImplicitAny": false /* Enable this if you want to enforce explicit types */
   },
   "exclude": ["node_modules"]
 }

@@ -37,7 +37,7 @@ const handleTikTokLiveConnection = (socket) => {
   // Handle connecting to the live
   tiktokLiveConnection = new WebcastPushConnection(tiktokUsername, {
     processInitialData: false,
-    // sessionId: config.tiktokSessionId,
+    sessionId: config.tiktokSessionId,
     enableWebsocketUpgrade: true,
   });
 
@@ -45,7 +45,7 @@ const handleTikTokLiveConnection = (socket) => {
     .connect()
     .then((state) => {
       logger.info(
-        `Connected to roomId ${state.roomId}\n sessionID: ${config.tiktokSessionId}\n Title: ${state.roomInfo.title}`
+        `Connected to roomId ${state.roomId}\n sessionID: ${config.tiktokSessionId}\n Live title: ${state.roomInfo.title}`
       );
       socket.emit("ConnectionStatus", {
         type: "success",
@@ -88,7 +88,7 @@ const handleTikTokDisconnect = () => {
 //#endregion
 
 // Function to handle the incoming TikTok username
-const handleUsername = (incomingUsername, socket) => {
+const handleUsername = (incomingUsername: string, socket: any) => {
   if (!incomingUsername) {
     // Check if the username is empty
     logger.info(`[SERVER]: TIKTOK USERNAME CANT BE EMPTY`);
@@ -119,13 +119,23 @@ const handleUsername = (incomingUsername, socket) => {
 
 //#region Comment processing
 // Handling function of a test comment
-const handleTestComment = (user, comment, followRole, socket) => {
+const handleTestComment = (
+  user: string,
+  comment: string,
+  followRole: number,
+  socket: any
+) => {
   logger.info("Handling a test comment.");
   handleComment(user, comment, followRole, socket);
 };
 
 // Step 1: Handle the comment
-const handleComment = (user, comment, followRole, socket) => {
+const handleComment = (
+  user: string,
+  comment: string,
+  followRole: number,
+  socket: any
+) => {
   if (!commentRulesPassed(comment)) {
     // Check if the comment passes the rules
     return;
@@ -148,7 +158,12 @@ const handleComment = (user, comment, followRole, socket) => {
 };
 
 // Step 2: Process the comment
-const processComment = (user, comment, followRole, socket) => {
+const processComment = (
+  user: string,
+  comment: string,
+  followRole: number,
+  socket: any
+) => {
   logger.info(`Step 2: Processing comment from ${user}`);
 
   allowCommentProcessing = false; // Disable comment processing to prevent multiple comments being processed at the same time
@@ -169,14 +184,14 @@ const processComment = (user, comment, followRole, socket) => {
 };
 
 // Step 3: Handle the text-to-speech finished event
-function handleTextToSpeechFinished(socket) {
+function handleTextToSpeechFinished(socket: any) {
   allowCommentProcessing = true;
   logger.info("Final step: Text-to-speech finished.");
   checkQueueForComments(socket);
 }
 
 // Step 4: Check the queue for comments
-function checkQueueForComments(socket) {
+function checkQueueForComments(socket: any) {
   if (commentQueue.size() > 0) {
     const nextComment = commentQueue.dequeue();
     if (nextComment) {
@@ -197,8 +212,8 @@ function checkQueueForComments(socket) {
 }
 //#endregion
 
-// Handles checking if the comment passes the rules then returns a boolean
-function commentRulesPassed(comment) {
+// Handles checking if the comment passes the rules
+function commentRulesPassed(comment: string) {
   if (
     comment.startsWith("@") || // To verify comment isnt a reply
     comment.length > 200 || // To verify comment isnt too long

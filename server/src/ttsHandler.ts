@@ -1,3 +1,4 @@
+import { config } from "./config/config";
 export const { promisify } = require("util");
 export const fs = require("fs");
 export const writeFile = promisify(fs.writeFile);
@@ -7,7 +8,7 @@ const speechFile = path.resolve("./speech.mp3");
 
 const { OpenAI } = require("openai");
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: config.openAiApiKey,
 });
 
 const handleAudioRequest = async (req, res) => {
@@ -33,7 +34,7 @@ const handleAudioRequest = async (req, res) => {
 };
 
 // Function to generate the text-to-speech audio
-const generateTextToSpeech = async (text) => {
+const generateTextToSpeech = async (text: string) => {
   try {
     const response = await openai.audio.speech.create({
       model: "tts-1",

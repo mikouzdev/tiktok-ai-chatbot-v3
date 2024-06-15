@@ -1,24 +1,28 @@
+import { config } from "./config/config";
 export const logger = require("../utils/logger.js");
 require("dotenv").config();
 
 const { OpenAI } = require("openai");
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: config.openAiApiKey,
 });
 
-//#region ChatGPT prompt declarations
-const messagePrompts = {
+//#region ChatGPT declarations
+
+// ChatGPT parameters
+const MODEL: string = "gpt-4o";
+const MAX_TOKENS: number = 120; // output max tokens
+const TEMPERATURE: number = 1; // 0-2, higher is more creative, lower is more coherent
+
+const prompts = {
   //
-  generalUser: `Vastaat TikTok liven kommentteihin luonnollisella nuorisomaisella tyylillä. Käytä huumoria, ironiaa ja aina pieniä alkukirjaimia. Lyhyitä vastauksia.`,
+  generalUser: `Answer the TikTok live comments in a humorous and natural way.`, // Prompt for general users
   //
-  follower: `Vastaat humorisesti ja luonnollisesti TikTok liven kommentteihin puhekielellä. 
-    Ole ihastunut, kissamainen, söpö ja hieman ujo. Käytä uwu-kieltä. Pienet alkukirjaimet.
-    Lisätietoja: kommentoija seuraa sinua!`,
+  follower: `Answer the TikTok live comments in a humorous and natural way. User is following you!`, // Prompt for followers
   //
-  friend: `Vastaat humorisesti ja luonnollisesti TikTok liven kommentteihin puhekielellä. 
-    Ole ihastunut, kissamainen, söpö ja hieman ujo. Käytä uwu-kieltä. Pienet alkukirjaimet.
-    Lisätietoja: kommentoija seuraa sinua!`,
+  friend: `Answer the TikTok live comments in a humorous and natural way. User is your friend!`, // Prompt for friends
 };
+
 // #endregion
 
 export const handleAnswer = async (
@@ -28,31 +32,32 @@ export const handleAnswer = async (
 ) => {
   try {
     const result: string = await callGPT(followRole, question);
-    socket.emit("Answer", result);
+    socket.emit("Answer", result); // Emit the answer to the client
   } catch (err) {
-    logger.error("Error handling answer:", err);
+    logger.error("Error on handleAnswer:", err);
   }
 };
 
 //#region Main functions
-// Function to handle fetching the gpt output
+
+// Function to handle fetching the gpt response
 async function callGPT(followRole: number, question: string) {
   const systemMessage = generateSystemMessage(followRole);
-  const finalPrompt = `${systemMessage}\n`;
+  const finalPrompt = `${systemMessage}\n`; // Add a newline after the system message
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: MODEL,
       messages: [
         { role: "system", content: finalPrompt },
         { role: "user", content: question },
       ],
-      max_tokens: 120,
-      temperature: 1,
+      max_tokens: MAX_TOKENS,
+      temperature: TEMPERATURE,
     });
     return response.choices[0].message.content;
   } catch (error) {
-    console.error("Error fetching answer:", error);
+    console.error("Error on callGPT: ", error);
     throw error;
   }
 }
@@ -61,13 +66,13 @@ async function callGPT(followRole: number, question: string) {
 function generateSystemMessage(followRole: number) {
   switch (followRole) {
     case 0: // General user
-      return messagePrompts.generalUser;
+      return prompts.generalUser;
     case 1: // Follower
-      return messagePrompts.follower;
+      return prompts.follower;
     case 2: // Friend
-      return messagePrompts.friend;
+      return prompts.friend;
     default:
-      return messagePrompts.generalUser;
+      return prompts.generalUser; // Default to general user
   }
 }
 //#endregion

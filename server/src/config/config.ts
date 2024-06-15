@@ -7,7 +7,7 @@ dotenv.config({ path: path.join(rootDir, ".env") }); // Load environment variabl
 export const config = {
   port: process.env.PORT || 3001,
   tiktokSessionId: process.env.TIKTOK_SESSION_ID,
-  openAiKey: process.env.OPENAI_API_KEY,
+  openAiApiKey: process.env.OPENAI_API_KEY,
 };
 
-console.log("Config loaded:", config);
+// console.log("Config loaded:", config);
