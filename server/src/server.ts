@@ -1,8 +1,9 @@
 // server.js
+import { logger } from "./utils/logger";
 export const express = require("express");
 export const http = require("http");
 export const socketio = require("socket.io");
-export const logger = require("../utils/logger.js");
+
 export const tiktokHandler = require("./tiktokHandler");
 export const ttsHandler = require("./ttsHandler");
 export const queue = require("./commentQueue.js"); // Import your queue module
@@ -64,7 +65,7 @@ app.post("/api/testComment", (req, res) => {
   } else {
     // Send an error response if required data is missing
     res.status(400).json({ success: false, message: "Missing required data" });
-    logger.error("Missing required data for test comment");
+    console.log("Missing required data for test comment");
   }
 });
 

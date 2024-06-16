@@ -2,11 +2,11 @@
 
 import { WebcastPushConnection } from "tiktok-live-connector";
 import { config } from "./config/config";
+import { logger } from "./utils/logger";
 import commentQueue = require("./commentQueue.js");
 import gptHandler = require("./gptHandler.js");
-import logger = require("../utils/logger.js");
 
-let tiktokLiveConnection;
+let tiktokLiveConnection: WebcastPushConnection;
 let tiktokUsername: string;
 let allowCommentProcessing: boolean = true;
 let prevComment: string;
@@ -14,7 +14,7 @@ let prevComment: string;
 //#region Connections and initialization
 
 // Initialize the socket connection for the TikTok live
-const initialize = (socket) => {
+function initialize(socket: any) {
   socket.on("TikTokUsername", (data) => handleUsername(data, socket));
   socket.on("DisconnectFromTikTok", () => handleTikTokDisconnect());
 
@@ -22,10 +22,10 @@ const initialize = (socket) => {
     // Handle the text-to-speech finished event
     handleTextToSpeechFinished(socket);
   });
-};
+}
 
 // Handle the connection to the TikTok live and the incoming comments
-const handleTikTokLiveConnection = (socket) => {
+function handleTikTokLiveConnection(socket: any) {
   socket.emit("ConnectionStatus", { type: "info", message: "Connecting..." });
 
   // Handle disconnection if there is already a connection to prevent multiple connections
@@ -75,20 +75,20 @@ const handleTikTokLiveConnection = (socket) => {
   tiktokLiveConnection.on("error", (err) => {
     console.error("Error!", err);
   });
-};
+}
 
 // Function to handle the tiktok disconnection
-const handleTikTokDisconnect = () => {
+function handleTikTokDisconnect() {
   if (tiktokLiveConnection) {
     tiktokLiveConnection.disconnect(); // Disconnect from the TikTok live
     commentQueue.clear(); // Clear the comment queue
   }
   allowCommentProcessing = true; // Set comment processing back to true
-};
+}
 //#endregion
 
 // Function to handle the incoming TikTok username
-const handleUsername = (incomingUsername: string, socket: any) => {
+function handleUsername(incomingUsername: string, socket: any) {
   if (!incomingUsername) {
     // Check if the username is empty
     logger.info(`[SERVER]: TIKTOK USERNAME CANT BE EMPTY`);
@@ -115,27 +115,27 @@ const handleUsername = (incomingUsername: string, socket: any) => {
 
   tiktokUsername = incomingUsername; // Set the TikTok username to the incoming username
   handleTikTokLiveConnection(socket); // Handle the connection to the TikTok live
-};
+}
 
 //#region Comment processing
 // Handling function of a test comment
-const handleTestComment = (
+function handleTestComment(
   user: string,
   comment: string,
   followRole: number,
   socket: any
-) => {
+) {
   logger.info("Handling a test comment.");
   handleComment(user, comment, followRole, socket);
-};
+}
 
 // Step 1: Handle the comment
-const handleComment = (
+function handleComment(
   user: string,
   comment: string,
   followRole: number,
   socket: any
-) => {
+) {
   if (!commentRulesPassed(comment)) {
     // Check if the comment passes the rules
     return;
@@ -155,15 +155,15 @@ const handleComment = (
   }
 
   processComment(user, comment, followRole, socket);
-};
+}
 
 // Step 2: Process the comment
-const processComment = (
+function processComment(
   user: string,
   comment: string,
   followRole: number,
   socket: any
-) => {
+) {
   logger.info(`Step 2: Processing comment from ${user}`);
 
   allowCommentProcessing = false; // Disable comment processing to prevent multiple comments being processed at the same time
@@ -181,7 +181,7 @@ const processComment = (
     commentText: comment,
     followRole: followRole,
   });
-};
+}
 
 // Step 3: Handle the text-to-speech finished event
 function handleTextToSpeechFinished(socket: any) {

@@ -1,5 +1,5 @@
 import { config } from "./config/config";
-export const logger = require("../utils/logger.js");
+import { logger } from "./utils/logger";
 require("dotenv").config();
 
 const { OpenAI } = require("openai");
@@ -25,18 +25,19 @@ const prompts = {
 
 // #endregion
 
-export const handleAnswer = async (
+// Function to handle generating the answer
+export async function handleAnswer(
   question: string,
   followRole: number,
   socket: any
-) => {
+) {
   try {
     const result: string = await callGPT(followRole, question);
     socket.emit("Answer", result); // Emit the answer to the client
   } catch (err) {
     logger.error("Error on handleAnswer:", err);
   }
-};
+}
 
 //#region Main functions
 
