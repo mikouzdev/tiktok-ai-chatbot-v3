@@ -71,7 +71,7 @@ app.post("/api/testComment", (req, res) => {
 // on socket connection, initialize the tiktok handler and send the current queue
 io.on("connection", (socket) => {
   console.log(
-    `###\nSocket connected with id: ${socket.id}\nConnected clients count: ${io.engine.clientsCount}\n###`
+    `\nSocket connected with id: ${socket.id}\nConnected clients count: ${io.engine.clientsCount}\n`
   );
   tiktokHandler.initialize(socket, io);
   socket.emit("queueUpdate", queue.getQueue()); // Send the current queue to the client
@@ -79,7 +79,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", (reason: any) => {
     console.log(
-      `###\nSocket disconnected with id: ${socket.id}\nReason: ${reason}\nConnected clients count: ${io.engine.clientsCount}\n###`
+      `\nSocket disconnected with id: ${socket.id}\nReason: ${reason}\nConnected clients count: ${io.engine.clientsCount}`
     );
   });
 });
