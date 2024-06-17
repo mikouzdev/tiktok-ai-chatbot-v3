@@ -1,4 +1,5 @@
-export const logger = require("../utils/logger.js");
+import { logger } from "./utils/logger";
+
 export let queue: { user: string; comment: string; followRole: number }[] = []; // Initialize an empty queue
 const maxSize = 10; // Maximum size of the queue
 let io: any = null;
@@ -34,20 +35,25 @@ export const dequeue = () => {
   return removedItem;
 };
 
-export const size = () => queue.length; // Function to get the current queue size
+// Function to get the current size of the queue
+export function size() {
+  return queue.length;
+}
 
 // Function to clear the queue fully
-export const clear = () => {
+export function clear() {
   queue = [];
   logger.info("Queue cleared!");
   emitQueueUpdate();
-};
+}
 
-// Function that returns current queue data
-export const getQueue = () => queue;
+// Function to get the current queue
+export function getQueue() {
+  return queue;
+}
 
 // handles deleting a comment from the queue
-export const deleteComment = (index) => {
+export function deleteComment(index: number) {
   // Check if the index is a valid number
   if (typeof index !== "number" || isNaN(index)) {
     console.error("Invalid index. Index must be a valid number.");
@@ -72,10 +78,10 @@ export const deleteComment = (index) => {
     console.error("Error deleting comment:", error);
     return false;
   }
-};
+}
 
 // Simulate batch addition of comments to the queue
-const simulateQueueData = () => {
+function simulateQueueData() {
   const fakeComments = [
     { user: "x_username_325", comment: "eka kommentti", followRole: 2 },
     { user: "y_suparm4ny", comment: "vihainen kommentti 1", followRole: 1 },
@@ -94,7 +100,7 @@ const simulateQueueData = () => {
   });
 
   // console.log("Simulated queue data:", getQueue());
-};
+}
 
 module.exports = {
   initialize,

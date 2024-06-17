@@ -11,7 +11,7 @@ const openai = new OpenAI({
   apiKey: config.openAiApiKey,
 });
 
-const handleAudioRequest = async (req, res) => {
+async function handleAudioRequest(req, res) {
   const { text } = req.query;
   console.log("Received text:", text);
 
@@ -31,10 +31,10 @@ const handleAudioRequest = async (req, res) => {
       res.sendStatus(500);
     }
   }
-};
+}
 
 // Function to generate the text-to-speech audio
-const generateTextToSpeech = async (text: string) => {
+async function generateTextToSpeech(text: string) {
   try {
     const response = await openai.audio.speech.create({
       model: "tts-1",
@@ -50,9 +50,9 @@ const generateTextToSpeech = async (text: string) => {
     console.error("Error generating TTS:", err);
     throw err;
   }
-};
+}
 
-const streamAudioFile = (res, filePath) => {
+function streamAudioFile(res, filePath) {
   // Stream the TTS file to the client
   return new Promise<void>((resolve, reject) => {
     res.writeHead(200, {
@@ -74,9 +74,9 @@ const streamAudioFile = (res, filePath) => {
       reject(err);
     });
   });
-};
+}
 
-const deleteTtsFile = (filePath) => {
+function deleteTtsFile(filePath) {
   // Delete the TTS file after streaming
   try {
     fs.unlinkSync(filePath);
@@ -84,6 +84,6 @@ const deleteTtsFile = (filePath) => {
   } catch (err) {
     console.error("Error deleting the file:", err);
   }
-};
+}
 
 module.exports = { handleAudioRequest };
