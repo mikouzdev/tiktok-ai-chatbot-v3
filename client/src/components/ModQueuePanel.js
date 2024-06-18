@@ -37,9 +37,9 @@ const ModQueuePanel = ({
           ))}
         </ul>
       )}
-      {/* <button onClick={addRandomComment} className="add-random-button">
+      <button onClick={addRandomComment} className="add-random-button">
         Add Random Comment
-      </button> */}
+      </button>
     </div>
   );
 };

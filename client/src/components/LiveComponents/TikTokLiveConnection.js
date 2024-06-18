@@ -4,62 +4,55 @@ import UsernameInput from "../UsernameInput";
 
 const TikTokLiveConnection = () => {
   const socket = useContext(SocketContext);
+
   const [username, setUsername] = useState("");
   const [connectionStatus, setConnectionStatus] = useState("");
   const [isConnectedToTikTok, setIsConnectedToTikTok] = useState(false);
 
-  // Handle input change for TikTok live username
-  const handleInputChange = (event) => {
+  const handleUsernameChange = (event) => {
     setUsername(event.target.value);
   };
 
-  // Handles starting the TikTok live connection
-  const handleConnectingToLive = (event) => {
+  const startLiveConnection = (event) => {
     event.preventDefault();
 
     if (!socket.connected) {
-      // prevent username submission if not connected to socket
-      return;
+      return; // Prevent username submission if not connected to socket
     }
 
     socket.emit("TikTokUsername", username);
     setUsername("");
   };
 
-  // Handle disconnection from TikTok live
-  function handleDisconnectionFromLive() {
+  const disconnectFromLive = () => {
     setConnectionStatus("");
     setIsConnectedToTikTok(false);
     socket.emit("DisconnectFromTikTok");
-  }
+  };
 
-  // handle live connection status text
   const updateLiveConnectionStatus = useCallback((data) => {
     const { type, message } = data;
     setConnectionStatus(`${type}: ${message}`);
     setIsConnectedToTikTok(type === "success");
   }, []);
 
-  // useEffect to handle tiktok live connection status
   useEffect(() => {
     const handleConnectionStatus = (data) => {
-      // Handle connection status
       updateLiveConnectionStatus(data);
     };
 
     const handleConnectError = (error) => {
-      // Handle connection error
       setConnectionStatus(`Error: ${error.message}`);
     };
 
     if (socket) {
-      // Listen for connection status and error events
+      // Add event listeners
       socket.on("ConnectionStatus", handleConnectionStatus);
       socket.on("connect_error", handleConnectError);
     }
 
     return () => {
-      // Clean up on unmount
+      // Cleanup
       if (socket) {
         socket.off("ConnectionStatus", handleConnectionStatus);
         socket.off("connect_error", handleConnectError);
@@ -71,9 +64,9 @@ const TikTokLiveConnection = () => {
     <div>
       <UsernameInput
         username={username}
-        handleInputChange={handleInputChange}
-        handleStart={handleConnectingToLive}
-        handleDisconnect={handleDisconnectionFromLive}
+        handleInputChange={handleUsernameChange}
+        handleStart={startLiveConnection}
+        handleDisconnect={disconnectFromLive}
         connectionStatus={connectionStatus}
         isConnected={isConnectedToTikTok}
       />

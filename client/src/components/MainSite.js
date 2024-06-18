@@ -13,7 +13,7 @@ const MainSite = () => {
         <InputContainer className="top-container">
           <TikTokLiveConnection />
         </InputContainer>
-        <ChatContainer></ChatContainer>
+        <ChatContainer />
       </SiteContainer>
     </div>
   );
