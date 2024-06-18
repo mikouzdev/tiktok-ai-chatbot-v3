@@ -1,10 +1,51 @@
-# TikTok AI Chatbot v3
+# TikTok AI Chatbot V3
 
-This project is a TikTok AI Chatbot that uses OpenAIs ChatGPT & Text-to-speech APIs for generating responses to user comments.
+A web application that integrates with TikTok live sessions, allowing viewers to interact with an AI chatbot during the live stream. The chatbot responds to comments using OpenAI's ChatGPT and Text-to-Speech API.
 
-## Project Structure
+## Features
 
-- `config/`: Contains the configuration file for the project.
-- `server/`: Contains the server-side code for handling TikTok connections, user comments, and text-to-speech functionality.
-- `src/`: Contains the client-side React code for the chatbot interface.
-- `utils/`: Contains utility functions, such as a logger.
+- Real-time interaction with an AI chatbot during a TikTok live session.
+- Text-to-Speech capability for audible responses.
+- Comment queue system that allows deleting of queued comments. (Route: `/moderation`)
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/mikouzdev/tiktok-ai-chatbot-v3
+```
+
+2. Install dependencies for the frontend and backend:
+
+```bash
+# Frontend
+cd .\client\
+npm install
+
+# Backend
+cd ..\server\
+npm install
+```
+
+## Configuration
+
+1. Rename `.env.template` to `.env` in the root directory.
+2. Set up the required environment variables in the `.env` file.
+
+## Usage
+
+1. Start the React.js frontend:
+
+```bash
+cd client
+npm start
+```
+
+2. Start the Node.js backend:
+
+```bash
+cd .\server\
+tsc
+node .\dist\server.js
+```
