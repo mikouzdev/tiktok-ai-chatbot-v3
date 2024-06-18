@@ -14,6 +14,7 @@ A web application that integrates with TikTok live sessions, allowing viewers to
 
 ```bash
 git clone https://github.com/mikouzdev/tiktok-ai-chatbot-v3
+cd .\tiktok-ai-chatbot-v3\
 ```
 
 2. Install dependencies for the frontend and backend:
