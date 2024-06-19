@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 
-function TestCommentPanel() {
+/**
+ * This component allows you to send test comments thatll go through the same process as comments that would've come from a tt live.
+ */
+const TestCommentPanel = () => {
+  const [username, setUsername] = useState("");
+  const [commentText, setCommentText] = useState("");
+  const [followRole, setFollowRole] = useState("0");
   const [error, setError] = useState("");
-  const [testUser, setTestUser] = useState("");
-  const [testComment, setTestComment] = useState("");
-  const [testFollowRole, setTestFollowRole] = useState("0");
 
-  // Function to handle sending a test comment
-  const sendTestComment = async () => {
+  // This function sends a test comment to the server
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
     try {
       const response = await fetch("/api/testComment", {
         method: "POST",
@@ -15,17 +20,17 @@ function TestCommentPanel() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user: testUser,
-          comment: testComment,
-          followRole: parseInt(testFollowRole),
+          user: username,
+          comment: commentText,
+          followRole: parseInt(followRole, 10),
         }),
       });
 
       if (response.ok) {
         // Comment sent successfully
-        setTestUser("");
-        setTestComment("");
-        setTestFollowRole("0");
+        setUsername("");
+        setCommentText("");
+        setFollowRole("0");
         setError("");
       } else {
         // Handle error response
@@ -43,31 +48,34 @@ function TestCommentPanel() {
     <div className="mod-comment-panel">
       <h1 className="mod-comment-title">Test Comment</h1>
       {error && <p className="error">{error}</p>}
-      <div className="mod-comment-inside">
+      <form className="mod-comment-inside" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Username"
-          value={testUser}
-          onChange={(e) => setTestUser(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
         />
         <input
           type="text"
           placeholder="Comment"
-          value={testComment}
-          onChange={(e) => setTestComment(e.target.value)}
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+          required
         />
         <select
-          value={testFollowRole}
-          onChange={(e) => setTestFollowRole(e.target.value)}
+          value={followRole}
+          onChange={(e) => setFollowRole(e.target.value)}
+          required
         >
           <option value="0">None</option>
           <option value="1">Follower</option>
           <option value="2">Friend</option>
         </select>
-        <button onClick={sendTestComment}>Add Test Comment</button>
-      </div>
+        <button type="submit">Add Test Comment</button>
+      </form>
     </div>
   );
-}
+};
 
 export default TestCommentPanel;

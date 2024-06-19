@@ -60,8 +60,6 @@ Stylesheet of the moderation page.
   align-items: flex-start;
   gap: 0.5em;
   padding: 0.5em;
-
-  border: 2px solid blue;
 }
 
 .mod-comment-inside input,
@@ -93,7 +91,7 @@ select {
 /* Styling of the empty queue text */
 .empty-queue {
   text-align: center;
-  color: #1f1f1f;
+  color: #d1d1d1;
 }
 
 /* UL of the whole list */

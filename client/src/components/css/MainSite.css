@@ -131,7 +131,7 @@ body {
   align-items: center;
   justify-content: center;
   background: linear-gradient(180deg, #202020, #1a1a1a);
-  width: 100%;
+  width: 50rem;
   height: 6em;
   padding: 3em;
   margin-bottom: 1em;
@@ -189,7 +189,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1.33em;
-  width: 100%;
+  width: 50rem;
   max-height: 60vh;
   padding: 1.5em 0.75em;
   /* background-color: #222222; */

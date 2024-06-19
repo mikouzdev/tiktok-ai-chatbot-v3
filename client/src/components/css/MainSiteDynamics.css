@@ -1,0 +1,6 @@
+@media screen and (max-width: 800px) {
+  .top-container,
+  .chat-container {
+    width: 100%;
+  }
+}
