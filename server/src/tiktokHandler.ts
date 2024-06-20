@@ -11,17 +11,15 @@ let tiktokUsername: string;
 let allowCommentProcessing: boolean = true;
 let prevComment: string;
 
+const USERNAME_MAX_LENGTH = 30;
+const USERNAME_MIN_LENGTH = 4;
+
 //#region Connections and initialization
 
-// Initialize the socket connection for the TikTok live
-function initialize(socket: any) {
-  socket.on("TikTokUsername", (data) => handleUsername(data, socket));
-  socket.on("DisconnectFromTikTok", () => handleTikTokDisconnect());
-
-  socket.on("TextToSpeechFinished", () => {
-    // Handle the text-to-speech finished event
-    handleTextToSpeechFinished(socket);
-  });
+export function handleTextToSpeechFinished(socket: any, status: string) {
+  allowCommentProcessing = true;
+  console.log("Text to speech status:", status);
+  checkQueueForComments(socket);
 }
 
 // Handle the connection to the TikTok live and the incoming comments
@@ -41,6 +39,7 @@ function handleTikTokLiveConnection(socket: any) {
     enableWebsocketUpgrade: true,
   });
 
+  // Connect to the TikTok live
   tiktokLiveConnection
     .connect()
     .then((state) => {
@@ -78,7 +77,7 @@ function handleTikTokLiveConnection(socket: any) {
 }
 
 // Function to handle the tiktok disconnection
-function handleTikTokDisconnect() {
+export function handleTikTokDisconnect() {
   if (tiktokLiveConnection) {
     tiktokLiveConnection.disconnect(); // Disconnect from the TikTok live
     commentQueue.clear(); // Clear the comment queue
@@ -88,23 +87,20 @@ function handleTikTokDisconnect() {
 //#endregion
 
 // Function to handle the incoming TikTok username
-function handleUsername(incomingUsername: string, socket: any) {
+export function handleUsername(incomingUsername: string, socket: any) {
   if (!incomingUsername) {
-    // Check if the username is empty
+    // username is empty
     logger.info(`[SERVER]: TIKTOK USERNAME CANT BE EMPTY`);
-    socket.emit("ConnectionStatus", {
-      type: "error",
-      message: "Username is empty",
-    });
+    emitConnectionStatus(socket, "error", "Username is empty");
     return;
   }
-  if (incomingUsername.length < 4 || incomingUsername.length > 30) {
-    // Check if the username is too short or too long
+  if (
+    incomingUsername.length < USERNAME_MIN_LENGTH ||
+    incomingUsername.length > USERNAME_MAX_LENGTH
+  ) {
+    // username is invalid length
     logger.info(`[SERVER]: TIKTOK USERNAME IS INVALID LENGTH`);
-    socket.emit("ConnectionStatus", {
-      type: "error",
-      message: "Username invalid length",
-    });
+    emitConnectionStatus(socket, "error", "Username invalid length");
     return;
   }
 
@@ -117,9 +113,14 @@ function handleUsername(incomingUsername: string, socket: any) {
   handleTikTokLiveConnection(socket); // Handle the connection to the TikTok live
 }
 
+// Function to emit the connection status
+function emitConnectionStatus(socket: any, type: string, message: string) {
+  socket.emit("ConnectionStatus", { type: type, message: message });
+}
+
 //#region Comment processing
 // Handling function of a test comment
-function handleTestComment(
+export function handleTestComment(
   user: string,
   comment: string,
   followRole: number,
@@ -183,13 +184,6 @@ function processComment(
   });
 }
 
-// Step 3: Handle the text-to-speech finished event
-function handleTextToSpeechFinished(socket: any) {
-  allowCommentProcessing = true;
-  logger.info("Final step: Text-to-speech finished.");
-  checkQueueForComments(socket);
-}
-
 // Step 4: Check the queue for comments
 function checkQueueForComments(socket: any) {
   if (commentQueue.size() > 0) {
@@ -226,5 +220,3 @@ function commentRulesPassed(comment: string) {
     return true;
   }
 }
-
-module.exports = { initialize, handleTestComment };

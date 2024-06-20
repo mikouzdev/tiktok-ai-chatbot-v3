@@ -11,17 +11,21 @@ const initialize = (socketIo) => {
 // Function to emit queue updates to the client
 const emitQueueUpdate = () => {
   if (io) {
-    io.emit("queueUpdate", getQueue());
+    io.emit("UpdateQueue", getQueue());
   }
 };
 
 // Function to add a comment to the queue
-export const enqueue = (comment) => {
+export const enqueue = (comment: {
+  user: string;
+  comment: any;
+  followRole: number;
+}) => {
+  // Check if queue not full
   if (queue.length < maxSize) {
-    // Check if queue not full
     queue.push(comment); // Add comment to queue
-    emitQueueUpdate(); // Emit queue update to the client via socket.io
     logger.queue(`Added: | "${comment.comment}" | to the queue ->`); // Log the addition of the comment
+    emitQueueUpdate(); // Emit queue update to the client via socket.io
     return true; // Successfully added to queue
   } else {
     return false; // Else, return false (queue is full)

@@ -7,6 +7,8 @@ Stylesheet of the main page
 @import url("https://fonts.googleapis.com/css2?family=Manjari:wght@100&family=Poppins&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap");
 
+/* import stylesheet */
+
 /* Reset */
 * {
   margin: 0;

@@ -74,10 +74,11 @@ const ChatContainer = () => {
 
         audio.play();
         audio.addEventListener("ended", () => {
-          socket.emit("TextToSpeechFinished");
+          socket.emit("TextToSpeechStatus", { status: "ended" });
         });
       } catch (error) {
         console.error("Error fetching audio:", error);
+        socket.emit("TextToSpeechStatus", { status: "error" });
       }
     },
     [addMessageToChat, socket]

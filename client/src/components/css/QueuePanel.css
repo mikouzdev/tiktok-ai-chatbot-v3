@@ -1,0 +1,126 @@
+/* Styling of the queue panel */
+.mod-queue-panel {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5em;
+  width: 50em;
+  height: fit-content;
+  padding: 1em;
+  background-color: #2c2c2c;
+  border-radius: 8px;
+  box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.13);
+}
+
+.mod-queue-panel-title {
+  text-align: center;
+  color: #ffffff;
+  background: linear-gradient(180deg, #444444, #282828);
+  border-radius: 15px;
+  padding: 0.33em;
+  border: 1px solid #868686;
+}
+
+/* Styling of the empty queue text */
+.empty-queue {
+  text-align: center;
+  color: #d1d1d1;
+}
+
+/* UL of the whole list */
+.queue-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5em;
+  padding: 0;
+}
+
+/* Holds the queue item that then holds username, comment, role & delete button */
+.queue-item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  gap: 0.5em;
+  padding: 0.75em;
+  align-items: stretch;
+  border-radius: 10px;
+  height: max-content;
+
+  background: linear-gradient(90deg, #141414, #282828);
+
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.13);
+}
+
+.queue-item:nth-child(even) {
+  background-color: #d0e8ff;
+}
+
+/* b-container */
+.queue-item-a {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5em;
+  width: 100%;
+}
+
+/* containere for Username & role */
+.queue-item-b {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 0.5em;
+  width: 100%;
+}
+
+/* Styling of queue list item: username */
+.queue-item .mod-panel-user {
+  flex: 2;
+  color: #ffffff;
+  padding: 0.25em;
+  background: linear-gradient(180deg, #454545, #282828);
+  text-align: center;
+  border-radius: 10px;
+  height: fit-content;
+}
+
+/* Styling of queue list item: role */
+.queue-item .mod-panel-role {
+  flex: 1;
+  background: linear-gradient(180deg, #fe9b69, #d74e09);
+  padding: 0.25em;
+  text-align: center;
+  border-radius: 10px;
+  height: fit-content;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Styling of queue list item: comment */
+.queue-item .mod-panel-comment {
+  background: linear-gradient(180deg, #3c3c3c, #282828);
+  text-align: center;
+  padding: 0.75em;
+  width: 100%;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+/* Styling of queue list item: delete button */
+.queue-item .delete-button {
+  background: linear-gradient(90deg, #ac5959, #8c3c3c);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex: 1;
+  text-align: center;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.25);
+}

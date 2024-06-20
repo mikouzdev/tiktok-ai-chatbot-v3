@@ -4,7 +4,12 @@ export const express = require("express");
 export const http = require("http");
 export const socketio = require("socket.io");
 
-export const tiktokHandler = require("./tiktokHandler");
+import {
+  handleTestComment,
+  handleTextToSpeechFinished,
+  handleTikTokDisconnect,
+  handleUsername,
+} from "./tiktokHandler";
 export const ttsHandler = require("./ttsHandler");
 export const queue = require("./commentQueue.js"); // Import your queue module
 export const cors = require("cors");
@@ -17,6 +22,27 @@ const io = socketio(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
+});
+
+// setup the socket connection and event listeners
+io.on("connection", (socket: any) => {
+  console.log(`Connected clients count: ${io.engine.clientsCount}`);
+
+  // tiktokHandler event listeners
+  socket.on("TikTokUsername", (data: string) => handleUsername(data, socket));
+  socket.on("DisconnectFromTikTok", () => handleTikTokDisconnect());
+
+  // queue event listeners
+  socket.emit("UpdateQueue", queue.getQueue()); // Send the current queue to the clien
+
+  // ttsHandler event listeners
+  socket.on("TextToSpeechStatus", (data: { status: string }) =>
+    handleTextToSpeechFinished(socket, data.status)
+  );
+
+  socket.on("disconnect", () => {
+    console.log(`Connected clients count: ${io.engine.clientsCount}`);
+  });
 });
 
 // Correctly configure CORS middleware
@@ -53,11 +79,22 @@ app.post("/api/deleteComment", (req, res) => {
   }
 });
 
+// function to handle the incoming username from the client
+app.post("/api/username", (req, res) => {
+  const { username } = req.body;
+  if (username) {
+    handleUsername(username, io);
+    res.json({ success: true, message: "Username received successfully" });
+  } else {
+    res.status(400).json({ success: false, message: "Username is required" });
+  }
+});
+
 // function to handle the api calls of adding a test comment
-app.post("/api/testComment", (req, res) => {
+app.post("/api/testComment", (req: any, res: any) => {
   const { user, comment, followRole } = req.body;
   if (user && comment && followRole !== undefined) {
-    tiktokHandler.handleTestComment(user, comment, followRole, io); // io as the socket object
+    handleTestComment(user, comment, followRole, io); // io as the socket object
 
     logger.info("Test comment received successfully");
     // Send a success response
@@ -67,22 +104,6 @@ app.post("/api/testComment", (req, res) => {
     res.status(400).json({ success: false, message: "Missing required data" });
     console.log("Missing required data for test comment");
   }
-});
-
-// on socket connection, initialize the tiktok handler and send the current queue
-io.on("connection", (socket) => {
-  console.log(
-    `\nSocket connected with id: ${socket.id}\nConnected clients count: ${io.engine.clientsCount}\n`
-  );
-  tiktokHandler.initialize(socket, io);
-  socket.emit("queueUpdate", queue.getQueue()); // Send the current queue to the client
-  socket.emit("SocketIsConnected"); // Send a message to the client that the socket is connected
-
-  socket.on("disconnect", (reason: any) => {
-    console.log(
-      `\nSocket disconnected with id: ${socket.id}\nReason: ${reason}\nConnected clients count: ${io.engine.clientsCount}`
-    );
-  });
 });
 
 const port = process.env.PORT || 3001;

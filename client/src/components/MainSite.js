@@ -1,7 +1,6 @@
 import React from "react";
 
-import "./css/MainSite.css";
-import "./css/MainSiteDynamics.css";
+import "./css/Centralized.css";
 import InputContainer from "./InputContainer";
 import ChatContainer from "./LiveComponents/ChatContainer";
 import TikTokLiveConnection from "./LiveComponents/TikTokLiveConnection";

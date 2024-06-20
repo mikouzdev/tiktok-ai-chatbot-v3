@@ -24,7 +24,7 @@ function ModerationPanel() {
   useEffect(() => {
     if (socket) {
       // Listen for queue updates from the server
-      socket.on("queueUpdate", (data) => {
+      socket.on("UpdateQueue", (data) => {
         setQueueList(data);
         setError(""); // Clear any previous errors
       });
@@ -36,7 +36,7 @@ function ModerationPanel() {
 
       // Clean up on unmount
       return () => {
-        socket.off("queueUpdate");
+        socket.off("UpdateQueue");
         socket.off("connect_error");
       };
     }
