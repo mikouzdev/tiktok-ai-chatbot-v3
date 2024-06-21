@@ -8,7 +8,7 @@ const MAX_MESSAGES = 2; // Maximum amount of messages to show in chat
 const getFollowRoleDescription = (followRole) => {
   switch (followRole) {
     case 0:
-      return "Ei seuraa";
+      return "Not following";
     case 1:
       return "Follower";
     case 2:

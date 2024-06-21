@@ -7,6 +7,8 @@ const ModQueuePanel = ({
   addRandomComment,
   getRoleLabel,
 }) => {
+  const showAddRandomCommentButton = true; // You can change this to false to hide the button
+
   return (
     <div className="mod-queue-panel">
       <h1 className="mod-queue-panel-title">Comment queue</h1>
@@ -37,9 +39,11 @@ const ModQueuePanel = ({
           ))}
         </ul>
       )}
-      {/* <button onClick={addRandomComment} className="add-random-button">
-        Add Random Comment
-      </button> */}
+      {showAddRandomCommentButton && (
+        <button onClick={addRandomComment} className="add-random-button">
+          Add Random Comment
+        </button>
+      )}
     </div>
   );
 };
