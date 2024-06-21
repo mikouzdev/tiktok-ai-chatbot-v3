@@ -46,7 +46,7 @@ const TestCommentPanel = () => {
 
   return (
     <div className="mod-comment-panel">
-      <h1 className="mod-comment-title">Test Comment</h1>
+      <h1 className="mod-comment-title">Add comment</h1>
       {error && <p className="error">{error}</p>}
       <form className="mod-comment-inside" onSubmit={handleSubmit}>
         <input
@@ -72,7 +72,7 @@ const TestCommentPanel = () => {
           <option value="1">Follower</option>
           <option value="2">Friend</option>
         </select>
-        <button type="submit">Add Test Comment</button>
+        <button type="submit">Add comment</button>
       </form>
     </div>
   );

@@ -5,7 +5,7 @@
   flex-direction: column;
   justify-content: center;
   gap: 0.5em;
-  width: 50em;
+
   height: fit-content;
   padding: 1em;
   background-color: #2c2c2c;
@@ -16,10 +16,9 @@
 .mod-queue-panel-title {
   text-align: center;
   color: #ffffff;
-  background: linear-gradient(180deg, #444444, #282828);
-  border-radius: 15px;
+  background: linear-gradient(180deg, #202020, #1a1a1a);
   padding: 0.33em;
-  border: 1px solid #868686;
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.25);
 }
 
 /* Styling of the empty queue text */

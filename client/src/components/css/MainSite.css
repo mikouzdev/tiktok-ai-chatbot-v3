@@ -38,23 +38,9 @@ body {
 
 .top-container,
 .chat-container,
-.settings-container,
-.tools-container,
 .comment,
 .answer {
   box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.25);
-}
-
-/* Header Styles */
-.site-header {
-  width: 100%;
-  text-align: center;
-  background-color: #3b1f2b;
-  padding: 10px 0;
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #ff00ff;
-  border-bottom: 2px solid #ff00ff;
 }
 
 .header-container {
