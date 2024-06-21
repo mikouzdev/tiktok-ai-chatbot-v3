@@ -7,7 +7,7 @@ const ModQueuePanel = ({
   addRandomComment,
   getRoleLabel,
 }) => {
-  const showAddRandomCommentButton = true; // You can change this to false to hide the button
+  const showAddRandomCommentButton = false; // You can change this to false to hide the button
 
   return (
     <div className="mod-queue-panel">

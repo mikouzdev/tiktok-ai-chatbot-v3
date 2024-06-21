@@ -43,8 +43,8 @@ export async function handleAnswer(
 
 // Function to handle fetching the gpt response
 async function callGPT(followRole: number, question: string) {
-  const systemMessage = generateSystemMessage(followRole);
-  const finalPrompt = `${systemMessage}\n`; // Add a newline after the system message
+  const systemPrompt = generateSystemMessage(followRole);
+  const finalPrompt = `${systemPrompt}\n`; // Add a newline after the system message
 
   try {
     const response = await openai.chat.completions.create({
@@ -77,5 +77,3 @@ function generateSystemMessage(followRole: number) {
   }
 }
 //#endregion
-
-module.exports = { handleAnswer };
