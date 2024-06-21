@@ -1,6 +1,4 @@
-<div align="center>
-<img src="https://github.com/mikouzdev/tiktok-ai-chatbot-v3/blob/main/header.png" alt="Header Image" width="600" />
-</div>
+<img align="center" src="https://github.com/mikouzdev/tiktok-ai-chatbot-v3/blob/main/header.png" alt="Header Image" width="600" />
 
 # TikTok AI Chatbot V3
 
