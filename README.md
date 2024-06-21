@@ -1,6 +1,6 @@
-<img align="center" src="https://github.com/mikouzdev/tiktok-ai-chatbot-v3/blob/main/header.png" alt="Header Image" width="600" />
-
 # TikTok AI Chatbot V3
+
+<img align="center" src="https://github.com/mikouzdev/tiktok-ai-chatbot-v3/blob/main/header.png" alt="Header Image" width="600" />
 
 A web application that integrates with TikTok live sessions, allowing viewers to interact with an AI chatbot during the live stream. The chatbot responds to comments using OpenAI's ChatGPT and Text-to-Speech API.
 
