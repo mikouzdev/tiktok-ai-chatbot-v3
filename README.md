@@ -36,7 +36,8 @@ npm install
 1. Rename `.env.template` to `.env` in the root directory.
 2. Set up the required environment variables in the `.env` file.
 
-The prompts and other ChatGPT parameters, can be found at `server/src/gptHandler.ts`.
+You can modify the prompts on the moderation page.
+The ChatGPT API parameters, can be found at `server/src/gptHandler.ts`.
 
 ## Usage
 
