@@ -13,6 +13,7 @@ import {
 export const ttsHandler = require("./ttsHandler");
 export const queue = require("./commentQueue.js"); // Import your queue module
 export const cors = require("cors");
+import { updatePrompts } from "./gptHandler";
 
 const app = express();
 const server = http.createServer(app);
@@ -63,7 +64,7 @@ queue.initialize(io); // Initialize the queue module with the socket object
 app.get("/api/audio", ttsHandler.handleAudioRequest);
 
 // Function to handle the api calls of removing a comment from the queue
-app.post("/api/deleteComment", (req, res) => {
+app.post("/api/deleteComment", (req: any, res: any) => {
   const { index } = req.body;
   if (index !== undefined) {
     const success = queue.deleteComment(index);
@@ -80,9 +81,10 @@ app.post("/api/deleteComment", (req, res) => {
 });
 
 // function to handle the incoming username from the client
-app.post("/api/username", (req, res) => {
+app.post("/api/username", (req:any, res:any) => {
   const { username } = req.body;
   if (username) {
+    console.log("Trying connectiong to LIVE by: ", username);
     handleUsername(username, io);
     res.json({ success: true, message: "Username received successfully" });
   } else {
@@ -103,6 +105,30 @@ app.post("/api/testComment", (req: any, res: any) => {
     // Send an error response if required data is missing
     res.status(400).json({ success: false, message: "Missing required data" });
     console.log("Missing required data for test comment");
+  }
+});
+
+// Function to handle updating prompts
+// recieves the prompts from the client
+app.post("/api/updatePrompts", (req:any, res:any) => {
+  const { defaultPrompt: defaultPrompt, followerPrompt: followerPrompt, friendPrompt: friendPrompt } = req.body;
+ 
+  if (defaultPrompt !== undefined && followerPrompt !== undefined && friendPrompt !== undefined) {
+    // Here you would typically update your prompts in your database or file system
+    // For this example, we'll just log the received prompts
+    logger.info("Received updated prompts:");
+    logger.info(`Default: ${defaultPrompt}`);
+    logger.info(`Follower: ${followerPrompt}`);
+    logger.info(`Friend: ${friendPrompt}`);
+
+    updatePrompts(defaultPrompt, followerPrompt, friendPrompt);
+
+    // Send a success response
+    res.json({ success: true, message: "Prompts updated successfully" });
+  } else {
+    // Send an error response if required data is missing
+    res.status(400).json({ success: false, message: "Missing required prompt data" });
+    console.error("Missing required prompt data");
   }
 });
 

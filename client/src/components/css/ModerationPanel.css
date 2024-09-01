@@ -17,7 +17,7 @@ Stylesheet of the moderation page.
 }
 
 .mod-comment-panel {
-  flex: 1;
+  
   display: flex;
   flex-direction: column;
   padding: 1em;
@@ -67,7 +67,12 @@ select {
 }
 
 .mod-comment-inside button {
-  padding: 0.5em;
+  padding: 0.75em;
+  background-color: #00ff80;
+  color: rgb(0, 0, 0);
+  border: none;
+  cursor: pointer;
+  border-radius: 0.5em;
 }
 
 .error {
@@ -75,4 +80,11 @@ select {
   color: #cc0000;
   text-align: center;
   width: 100%;
+}
+
+.side-panels {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.33em;
 }

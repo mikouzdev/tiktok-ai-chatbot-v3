@@ -10,7 +10,7 @@ const getFollowRoleDescription = (followRole) => {
     case 0:
       return "Not following";
     case 1:
-      return "Follower";
+      return "Following";
     case 2:
       return "Friend";
     case 3:
@@ -33,6 +33,7 @@ const Message = ({ message }) => (
   </h3>
 );
 
+// function to render the chat container
 const ChatContainer = () => {
   const socket = useContext(SocketContext);
   const [messages, setMessages] = useState([]);

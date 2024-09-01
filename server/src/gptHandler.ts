@@ -7,21 +7,42 @@ const openai = new OpenAI({
   apiKey: config.openAiApiKey,
 });
 
+const fs = require("fs");
+
 //#region ChatGPT declarations
 
 // ChatGPT parameters
-const MODEL: string = "gpt-4o";
+const MODEL: string = "chatgpt-4o-latest";
 const MAX_TOKENS: number = 120; // output max tokens
+
 const TEMPERATURE: number = 1; // 0-2, higher is more creative, lower is more coherent
+
+let prompt = "";
+
+prompt = fs.readFileSync("./prompt.txt", "utf8");
+console.log(prompt);
 
 const prompts = {
   //
   generalUser: `Answer the TikTok live comments in a humorous and natural way.`, // Prompt for general users
   //
-  follower: `Answer the TikTok live comments in a humorous and natural way. User is following you!`, // Prompt for followers
+  follower: ``, // Prompt for followers
   //
-  friend: `Answer the TikTok live comments in a humorous and natural way. User is your friend!`, // Prompt for friends
+  friend: ``, // Prompt for friends
 };
+
+// updates the prompts coming from the client
+export function updatePrompts(
+  defaultPrompt: string,
+  followerPrompt: string,
+  friendPrompt: string
+) {
+  prompts.generalUser = defaultPrompt;
+  prompts.follower = followerPrompt;
+  prompts.friend = friendPrompt;
+
+  console.log(prompts);
+}
 
 // #endregion
 

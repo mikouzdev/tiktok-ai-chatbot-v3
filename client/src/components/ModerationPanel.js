@@ -11,6 +11,7 @@ import React, { useContext, useEffect, useState } from "react";
 import ModQueuePanel from "./ModQueuePanel";
 import { SocketContext } from "./SocketProvider";
 import TestCommentPanel from "./TestCommentPanel";
+import PromptEditPanel from "./PromptEditPanel";
 //#endregion
 
 //css
@@ -117,7 +118,10 @@ function ModerationPanel() {
         getRoleLabel={getRoleLabel}
       />
       {/* Test */}
+      <div className="side-panels">
       <TestCommentPanel />
+      <PromptEditPanel />
+      </div>
     </div>
   );
 }
