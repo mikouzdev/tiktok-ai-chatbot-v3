@@ -12,7 +12,7 @@ function UsernameInput({
     <div>
       <div className="header-container">
         {/* <h3 id="username">Enter username:</h3> */}
-        <p>{connectionStatus}</p>
+        <p className="connection-status">{connectionStatus}</p>
       </div>
       <form onSubmit={handleStart}>
         <div className="input-container" id="chat">
@@ -22,7 +22,7 @@ function UsernameInput({
             onChange={handleInputChange}
             className="input"
             type="text"
-            placeholder="Username"
+            placeholder="@tiktok_username"
             id="username"
             required
           />

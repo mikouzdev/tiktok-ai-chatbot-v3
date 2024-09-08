@@ -59,6 +59,7 @@ function PromptEditPanel() {
         <div className="prompt-edit-panel">
             <div className="prompt-edit-panel-header">
                 <h1>Prompt Edit Panel</h1>
+                <p>System prompts for different follow roles.</p>
             </div>
             <div className="prompt-edit-panel-body">
             <select value={selectedOption} onChange={handleOptionChange} className="prompt-edit-select">

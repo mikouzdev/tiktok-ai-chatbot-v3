@@ -19,8 +19,7 @@ const TEMPERATURE: number = 1; // 0-2, higher is more creative, lower is more co
 
 let prompt = "";
 
-prompt = fs.readFileSync("./prompt.txt", "utf8");
-console.log(prompt);
+
 
 const prompts = {
   //

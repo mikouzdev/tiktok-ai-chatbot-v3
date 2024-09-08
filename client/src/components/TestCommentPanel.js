@@ -46,7 +46,10 @@ const TestCommentPanel = () => {
 
   return (
     <div className="mod-comment-panel">
-      <h1 className="mod-comment-title">Add comment</h1>
+      <div className="mod-comment-title">
+        <h1>Add comment</h1>
+        <p>Add a custom comment to the queue.</p>
+      </div>
       {error && <p className="error">{error}</p>}
       <form className="mod-comment-inside" onSubmit={handleSubmit}>
         <input
