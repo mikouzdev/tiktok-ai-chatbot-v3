@@ -35,8 +35,9 @@ async function handleAudioRequest(req: Request, res: Response) {
 async function generateTextToSpeech(text) {
   try {
     const response = await openai.audio.speech.create({
+      // whisper parameters
       model: "tts-1",
-      voice: "nova",
+      voice: "nova", // tts speaker voice
       input: text,
     });
 

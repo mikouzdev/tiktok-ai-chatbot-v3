@@ -130,7 +130,9 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+  padding: 10px;
 }
 
 .input {
@@ -233,4 +235,13 @@ body {
 .connection-status {
   text-align: center;
   font-size: 15px;
+}
+
+.cog-icon {
+  text-decoration: none;
+  font-size: 1.4em;
+  background: linear-gradient(120deg, #4576ff, #3068cf);
+  border-radius: 5px;
+  width: 1.54em;
+  text-align: center;
 }

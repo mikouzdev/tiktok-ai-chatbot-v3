@@ -3,6 +3,10 @@ ModerationPanel.css
 Stylesheet of the moderation page.
 */
 
+* {
+  font-family: "Poppins", sans-serif;
+}
+
 /* Styling of the whole page */
 .mod-panel-site {
   width: 100vw;
@@ -14,6 +18,7 @@ Stylesheet of the moderation page.
   background: linear-gradient(180deg, #202020, #1a1a1a);
   overflow-y: auto;
   background-color: #141414;
+  
 }
 
 .mod-comment-panel {
@@ -58,12 +63,14 @@ Stylesheet of the moderation page.
   align-items: flex-start;
   gap: 0.5em;
   padding: 0.5em;
+  
 }
 
 .mod-comment-inside input,
 select {
   padding: 0.5em;
   width: 75%;
+  
 }
 
 .mod-comment-inside button {
@@ -87,4 +94,9 @@ select {
   flex: 1;
   flex-direction: column;
   gap: 1.33em;
+}
+
+/* styling of the prompt editing apply status */
+.apply-status {
+  text-align: center;
 }

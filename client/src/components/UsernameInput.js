@@ -36,6 +36,15 @@ function UsernameInput({
               Start
             </button>
           )}
+                      <a
+              href="/moderation"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cog-icon"
+              title="Moderation"
+            >
+              ⚙️
+            </a>
         </div>
       </form>
     </div>

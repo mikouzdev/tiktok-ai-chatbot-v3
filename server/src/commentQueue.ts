@@ -84,28 +84,6 @@ export function deleteComment(index: number) {
   }
 }
 
-// Simulate batch addition of comments to the queue
-function simulateQueueData() {
-  const fakeComments = [
-    { user: "x_username_325", comment: "eka kommentti", followRole: 2 },
-    { user: "y_suparm4ny", comment: "vihainen kommentti 1", followRole: 1 },
-    { user: "jaakko03", comment: "kk", followRole: 2 },
-    { user: "spi_on_paras444", comment: "moi mitem nmenee?!=!", followRole: 1 },
-    {
-      user: "keltainen_auto_mies_0143",
-      comment:
-        "This is a comment from User5 ja tämä on todeeella pitkä komntentittitit!?!?!?!!",
-      followRole: 0,
-    },
-  ];
-
-  fakeComments.forEach((comment) => {
-    enqueue(comment);
-  });
-
-  // console.log("Simulated queue data:", getQueue());
-}
-
 module.exports = {
   initialize,
   enqueue,
@@ -115,5 +93,4 @@ module.exports = {
   getQueue,
   deleteComment,
   maxSize,
-  simulateQueueData,
 };

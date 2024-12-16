@@ -59,7 +59,7 @@ const ChatContainer = () => {
     []
   );
 
-  // Fetches audio, plays it and adds the corresponding message to the chat
+  // Fetch audio, play it and add the corresponding message to the chat
   const fetchAudioAndPlay = useCallback(
     async (text) => {
       try {

@@ -9,9 +9,9 @@
 //#region Imports
 import React, { useContext, useEffect, useState } from "react";
 import ModQueuePanel from "./ModQueuePanel";
+import PromptEditPanel from "./PromptEditPanel";
 import { SocketContext } from "./SocketProvider";
 import TestCommentPanel from "./TestCommentPanel";
-import PromptEditPanel from "./PromptEditPanel";
 //#endregion
 
 //css
@@ -55,8 +55,8 @@ function ModerationPanel() {
         return "Unknown";
     }
   };
-  // Handle the deletion of a comment from the queue
 
+  // Handle deletion of a comment from the queue
   const deleteComment = (index) => {
     fetch("/api/deleteComment", {
       method: "POST",
@@ -75,11 +75,11 @@ function ModerationPanel() {
       })
       .catch((error) => {
         console.error("Error deleting comment:", error);
-        setError("Failed to delete the comment. Please try again later.");
+        setError("Failed to delete the comment.");
       });
   };
 
-  // Function to generate a random comment on the queue for testing purposes (to see styling and functionality)
+  // Function to generate a random comment on the queue for testing purposes
   const generateRandomComment = () => {
     const users = ["User1", "User2", "User3", "User4", "User5"];
     const comments = [
@@ -119,8 +119,8 @@ function ModerationPanel() {
       />
       {/* Test */}
       <div className="side-panels">
-      <TestCommentPanel />
-      <PromptEditPanel />
+        <TestCommentPanel />
+        <PromptEditPanel />
       </div>
     </div>
   );
