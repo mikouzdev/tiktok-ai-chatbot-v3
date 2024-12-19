@@ -81,7 +81,7 @@ function PromptEditPanel() {
         />
         <button
           onClick={handleApply}
-          className="prompt-edit-button"
+          className="prompt-edit-button apply-button"
           disabled={applyStatus === "applying"}
         >
           {applyStatus === "applying" ? "Applying..." : "Apply"}

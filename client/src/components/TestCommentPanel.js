@@ -75,7 +75,9 @@ const TestCommentPanel = () => {
           <option value="1">Follower</option>
           <option value="2">Friend</option>
         </select>
-        <button type="submit">Add comment</button>
+        <button type="submit" className="add-comment-btn apply-button">
+          Add comment
+        </button>
       </form>
     </div>
   );

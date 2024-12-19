@@ -1,54 +1,55 @@
 .prompt-edit-panel {
-    display: flex;
-    flex-direction: column;
-    padding: 1em;
-    gap: 0.5em;
-    width: 100%;
-    background-color: #2c2c2c;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  gap: 0.5em;
+  width: 100%;
+  background-color: #2c2c2c;
 }
 
 .prompt-edit-panel-header {
-    text-align: center;
-    color: #ffffff;
-    background: linear-gradient(180deg, #202020, #1a1a1a);
-    padding: 0.33em;
-    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.25);
-    text-wrap: nowrap;
-    width: 100%;
+  text-align: center;
+  color: #ffffff;
+  background: linear-gradient(180deg, #202020, #1a1a1a);
+  padding: 0.33em;
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.25);
+  text-wrap: nowrap;
+  width: 100%;
 }
 
-.prompt-edit-select, .prompt-edit-button, .prompt-edit-textarea {
-    border-radius: 0.5em;
+.prompt-edit-select,
+.prompt-edit-button,
+.prompt-edit-textarea {
+  border-radius: 0.5em;
 }
 
 /* prompt text area */
 .prompt-edit-textarea {
-    width: 100%;
-    height: 200px;
-    padding: 0.5em;
+  width: 100%;
+  max-width: 100%;
+  height: 200px;
+  padding: 0.5em;
 }
 
 /* dropdown menu */
 .prompt-edit-select {
-    width: 100%;
-}    
+  width: 100%;
+}
 
 /* apply button */
 .prompt-edit-button {
-    width: 100%;
-    padding: 0.75em;
-    background-color: #00ff80;
-    color: rgb(0, 0, 0);
-    border: none;
-    cursor: pointer;
-    
+  width: 100%;
+  padding: 0.75em;
+  color: rgb(0, 0, 0);
+  border: none;
+  cursor: pointer;
 }
 
 .prompt-edit-panel-body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    padding: 0.5em;
-    justify-content: left;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 0.5em;
+  justify-content: left;
+  width: 100%;
 }

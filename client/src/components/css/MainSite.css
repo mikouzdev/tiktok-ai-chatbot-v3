@@ -153,7 +153,7 @@ body {
 .button {
   width: 7em;
   height: 2.5em;
-  padding: 10px;
+  padding: 8px;
   border-radius: 4px;
   border: none;
   color: #ffffff;
@@ -182,12 +182,10 @@ body {
   width: 50rem;
   max-height: 60vh;
   padding: 1.5em 0.75em;
-  /* background-color: #222222; */
   background: linear-gradient(180deg, #202020, #1a1a1a);
   background-size: cover;
   background-repeat: no-repeat;
   overflow-y: auto;
-  /* border: 2px solid #ffe66d; */
 }
 
 .chat-container:empty {
