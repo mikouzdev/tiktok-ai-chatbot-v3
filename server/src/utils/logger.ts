@@ -1,5 +1,5 @@
 export const logger = {
-  info: (message) => console.log(`[INFO]: ${message}`),
-  error: (message, err) => console.error(`[ERROR]: ${message}`, err),
-  queue: (message) => console.log(`[QUEUE]: ${message}`),
+  info: (message: string) => console.log(`[INFO]: ${message}`),
+  error: (message: string, err: any) => console.error(`[ERROR]: ${message}`, err),
+  queue: (message: string) => console.log(`[QUEUE]: ${message}`),
 };

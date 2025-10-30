@@ -1,8 +1,7 @@
-import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import MainSite from "./components/MainSite.js";
-import ModerationPanel from "./components/ModerationPanel.js";
-import { SocketProvider } from "./components/SocketProvider.js";
+import MainSite from "./components/MainSite.tsx";
+import ModerationPanel from "./components/ModerationPanel.tsx";
+import { SocketProvider } from "./components/SocketProvider.tsx";
 
 function App() {
   return (

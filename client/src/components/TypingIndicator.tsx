@@ -1,9 +1,7 @@
-import React from "react";
-
-function TypingIndicator({ isTyping }) {
+function TypingIndicator(props: { isTyping: boolean }) {
   return (
     <>
-      {isTyping && (
+      {props.isTyping && (
         <div className="typing-indicator-container">
           <b className="typing-indicator">.</b>
         </div>

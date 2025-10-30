@@ -1,25 +1,42 @@
 // server.js
 import { logger } from "./utils/logger";
-export const express = require("express");
-export const http = require("http");
-export const socketio = require("socket.io");
-
+import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import cors from "cors";
 import {
   handleTestComment,
   handleTextToSpeechFinished,
   handleTikTokDisconnect,
   handleUsername,
 } from "./tiktokHandler";
-export const ttsHandler = require("./ttsHandler");
-export const queue = require("./commentQueue.js"); // Import your queue module
-export const cors = require("cors");
+import { getQueue, initialize, deleteComment } from "./commentQueue"; // Import your queue module
 import { updatePrompts } from "./gptHandler";
+import router from "./api/router";
 
 const app = express();
-const server = http.createServer(app);
-const io = socketio(server, {
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Ensure this is correct
+    credentials: true,
+  })
+);
+
+app.use(express.json());
+
+app.use("/api", router);
+app.use("/", express.static("./dist/client"));
+
+app.get("/{*splat}", (_req, res) => {
+  res.sendFile("index.html", { root: "./dist/client" });
+});
+
+const server = createServer(app);
+
+const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -34,7 +51,7 @@ io.on("connection", (socket: any) => {
   socket.on("DisconnectFromTikTok", () => handleTikTokDisconnect());
 
   // queue event listeners
-  socket.emit("UpdateQueue", queue.getQueue()); // Send the current queue to the clien
+  socket.emit("UpdateQueue", getQueue()); // Send the current queue to the client
 
   // ttsHandler event listeners
   socket.on("TextToSpeechStatus", (data: { status: string }) =>
@@ -46,28 +63,13 @@ io.on("connection", (socket: any) => {
   });
 });
 
-// Correctly configure CORS middleware
-app.use(
-  cors({
-    origin: "http://localhost:3000", // Ensure this is correct
-    credentials: true,
-  })
-);
-
-// Middleware to parse JSON bodies
-app.use(express.json());
-
-queue.initialize(io); // Initialize the queue module with the socket object
-// queue.simulateQueueData();
-
-// Function to handle the api call of the tts
-app.get("/api/audio", ttsHandler.handleAudioRequest);
+initialize(io); // Initialize the queue module with the socket object
 
 // Function to handle the api calls of removing a comment from the queue
 app.post("/api/deleteComment", (req: any, res: any) => {
   const { index } = req.body;
   if (index !== undefined) {
-    const success = queue.deleteComment(index);
+    const success = deleteComment(index);
     if (success) {
       res.json({ success: true, message: "Comment deleted successfully" });
     } else {
@@ -81,7 +83,7 @@ app.post("/api/deleteComment", (req: any, res: any) => {
 });
 
 // function to handle the incoming username from the client
-app.post("/api/username", (req:any, res:any) => {
+app.post("/api/username", (req: any, res: any) => {
   const { username } = req.body;
   if (username) {
     console.log("Trying connectiong to LIVE by: ", username);
@@ -110,9 +112,9 @@ app.post("/api/testComment", (req: any, res: any) => {
 
 // Function to handle updating prompts
 // recieves the prompts from the client
-app.post("/api/updatePrompts", (req:any, res:any) => {
+app.post("/api/updatePrompts", (req: any, res: any) => {
   const { defaultPrompt: defaultPrompt, followerPrompt: followerPrompt, friendPrompt: friendPrompt } = req.body;
- 
+
   if (defaultPrompt !== undefined && followerPrompt !== undefined && friendPrompt !== undefined) {
     // Here you would typically update your prompts in your database or file system
     // For this example, we'll just log the received prompts

@@ -1,16 +1,19 @@
 {
-  "dependencies": {
-    "@types/node": "^20.14.2",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "openai": "^4.51.0",
-    "socket.io": "^4.7.5",
-    "tiktok-live-connector": "^1.1.7"
+  "devDependencies": {
+    "@types/express": "^5.0.4",
+    "@types/ws": "^8.18.1",
+    "dotenv": "^17.2.3",
+    "typescript": "^5.9.3"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "node -r dotenv/config dist/server.js"
   },
-  "devDependencies": {
-    "typescript": "^5.4.5"
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "openai": "^6.7.0",
+    "socket.io": "^4.8.1",
+    "tiktok-live-connector": "^2.1.0"
   }
 }

@@ -7,25 +7,31 @@
  */
 
 //#region Imports
-import React, { useContext, useEffect, useState } from "react";
-import ModQueuePanel from "./ModQueuePanel";
-import PromptEditPanel from "./PromptEditPanel";
-import { SocketContext } from "./SocketProvider";
-import TestCommentPanel from "./TestCommentPanel";
+import { useContext, useEffect, useState } from "react";
+import ModQueuePanel from "./ModQueuePanel.tsx";
+import PromptEditPanel from "./PromptEditPanel.tsx";
+import { SocketContext } from "./SocketProvider.tsx";
+import TestCommentPanel from "./TestCommentPanel.tsx";
 //#endregion
 
 //css
 import "./css/ModerationPanel.css";
 
+interface QueueItem {
+  user: string;
+  comment: string;
+  followRole: string;
+}
+
 function ModerationPanel() {
   const socket = useContext(SocketContext);
-  const [queueList, setQueueList] = useState([]);
+  const [queueList, setQueueList] = useState<QueueItem[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (socket) {
       // Listen for queue updates from the server
-      socket.on("UpdateQueue", (data) => {
+      socket.on("UpdateQueue", (data: any) => {
         setQueueList(data);
         setError(""); // Clear any previous errors
       });
@@ -43,13 +49,13 @@ function ModerationPanel() {
     }
   }, [socket]);
 
-  const getRoleLabel = (role) => {
+  const getRoleLabel = (role: string) => {
     switch (role) {
-      case 0:
+      case "0":
         return "Nonfollower";
-      case 1:
+      case "1":
         return "Follower";
-      case 2:
+      case "2":
         return "Friend";
       default:
         return "Unknown";
@@ -57,7 +63,7 @@ function ModerationPanel() {
   };
 
   // Handle deletion of a comment from the queue
-  const deleteComment = (index) => {
+  const deleteComment = (index: number) => {
     fetch("/api/deleteComment", {
       method: "POST",
       headers: {
@@ -95,11 +101,13 @@ function ModerationPanel() {
     const randomComment = comments[Math.floor(Math.random() * comments.length)];
     const randomRole = roles[Math.floor(Math.random() * roles.length)];
 
-    return {
+    const comment: QueueItem = {
       user: randomUser,
       comment: randomComment,
-      followRole: randomRole,
-    };
+      followRole: randomRole.toString(),
+    }
+
+    return comment
   };
 
   // Function to add a random comment item to the queue

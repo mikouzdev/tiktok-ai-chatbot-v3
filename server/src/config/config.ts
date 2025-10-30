@@ -1,8 +1,4 @@
-import * as dotenv from "dotenv";
-import * as path from "path";
-
-const rootDir = path.resolve(__dirname, "../../../"); // Get the root directory of the project
-dotenv.config({ path: path.join(rootDir, ".env") }); // Load environment variables from the .env file in the root directory
+import dotenv from "dotenv/config";
 
 export const config = {
   port: process.env.PORT || 3001,
@@ -10,4 +6,4 @@ export const config = {
   openAiApiKey: process.env.OPENAI_API_KEY,
 };
 
-// console.log("Config loaded:", config);
+console.log("Config loaded:", config);

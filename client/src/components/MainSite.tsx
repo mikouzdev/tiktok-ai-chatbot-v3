@@ -1,10 +1,8 @@
-import React from "react";
-
 import "./css/Centralized.css";
-import InputContainer from "./InputContainer";
-import ChatContainer from "./LiveComponents/ChatContainer";
-import TikTokLiveConnection from "./LiveComponents/TikTokLiveConnection";
-import SiteContainer from "./SiteContainer";
+import InputContainer from "./InputContainer.tsx";
+import ChatContainer from "./LiveComponents/ChatContainer.tsx";
+import TikTokLiveConnection from "./LiveComponents/TikTokLiveConnection.tsx";
+import SiteContainer from "./SiteContainer.tsx";
 
 const MainSite = () => {
   return (

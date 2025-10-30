@@ -8,7 +8,7 @@ function PromptEditPanel() {
     followerPrompt: "",
     friendPrompt: "",
   });
-  const [applyStatus, setApplyStatus] = useState(null);
+  const [applyStatus, setApplyStatus] = useState<string>("");
 
   // Load prompts from local storage on component mount
   useEffect(() => {
@@ -18,11 +18,11 @@ function PromptEditPanel() {
     }
   }, []);
 
-  const handleOptionChange = (e) => {
+  const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(e.target.value);
   };
 
-  const handleTextChange = (e) => {
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedContent = {
       ...textContent,
       [selectedOption]: e.target.value,
@@ -46,12 +46,12 @@ function PromptEditPanel() {
       .then((data) => {
         console.log("Success:", data);
         setApplyStatus("success");
-        setTimeout(() => setApplyStatus(null), 4000); // Clear status after 3 seconds
+        setTimeout(() => setApplyStatus(""), 4000); // Clear status after 3 seconds
       })
       .catch((error) => {
         console.error("Error:", error);
         setApplyStatus("error");
-        setTimeout(() => setApplyStatus(null), 5000); // Clear status after 3 seconds
+        setTimeout(() => setApplyStatus(""), 5000); // Clear status after 5 seconds
       });
   };
 
@@ -72,8 +72,8 @@ function PromptEditPanel() {
           <option value="friendPrompt">Friend</option>
         </select>
         <textarea
-          spellcheck="false"
-          value={textContent[selectedOption]}
+          spellCheck="false"
+          // value={textContent[selectedOption]}
           onChange={handleTextChange}
           placeholder="Enter text here"
           className="prompt-edit-textarea"

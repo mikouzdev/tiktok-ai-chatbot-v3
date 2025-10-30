@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2015",
-    "module": "commonjs",
+    "module": "nodenext",
     "strict": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "noImplicitAny": false /* Enable this if you want to enforce explicit types */
+    "skipLibCheck": true
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

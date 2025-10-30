@@ -1,25 +1,16 @@
 import { config } from "./config/config";
 import { logger } from "./utils/logger";
-require("dotenv").config();
 
-const { OpenAI } = require("openai");
+import OpenAI from "openai";
+
 const openai = new OpenAI({
   apiKey: config.openAiApiKey,
 });
 
-const fs = require("fs");
-
 //#region ChatGPT declarations
 
 // ChatGPT parameters
-const MODEL: string = "chatgpt-4o-latest";
-const MAX_TOKENS: number = 120; // output max tokens
-
-const TEMPERATURE: number = 1; // 0-2, higher is more creative, lower is more coherent
-
-let prompt = "";
-
-
+const MODEL: string = "gpt-5-nano";
 
 const prompts = {
   //
@@ -48,11 +39,12 @@ export function updatePrompts(
 // Function to handle generating the answer
 export async function handleAnswer(
   question: string,
-  followRole: number,
+  followRole: string,
   socket: any
 ) {
   try {
     const result: string = await callGPT(followRole, question);
+    if (!result) throw new Error("No response from GPT");
     socket.emit("Answer", result); // Emit the answer to the client
   } catch (err) {
     logger.error("Error on handleAnswer:", err);
@@ -62,21 +54,48 @@ export async function handleAnswer(
 //#region Main functions
 
 // Function to handle fetching the gpt response
-async function callGPT(followRole: number, question: string) {
+async function callGPT(followRole: string, question: string): Promise<string> {
   const systemPrompt = generateSystemMessage(followRole);
-  const finalPrompt = `${systemPrompt}\n`; // Add a newline after the system message
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await openai.responses.create({
       model: MODEL,
-      messages: [
-        { role: "system", content: finalPrompt },
-        { role: "user", content: question },
+      input: [
+        {
+          "role": "developer",
+          "content": [
+            {
+              "type": "input_text",
+              "text": systemPrompt
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": question
+            }
+          ]
+        }
       ],
-      max_tokens: MAX_TOKENS,
-      temperature: TEMPERATURE,
+      text: {
+        "format": {
+          "type": "text"
+        },
+        "verbosity": "low"
+      },
+      reasoning: {
+        "effort": "minimal",
+        "summary": null
+      },
+      tools: [],
+      store: false,
     });
-    return response.choices[0].message.content;
+    if (!response.output_text) throw new Error("No output from GPT response");
+    console.log("GPT Response:", response.output_text);
+    return response.output_text;
   } catch (error) {
     console.error("Error on callGPT: ", error);
     throw error;
@@ -84,16 +103,17 @@ async function callGPT(followRole: number, question: string) {
 }
 
 // Helper function to generate a system message based on followRole
-function generateSystemMessage(followRole: number) {
+function generateSystemMessage(followRole: string) {
   switch (followRole) {
-    case 0: // General user
+    case "0": // General user
       return prompts.generalUser;
-    case 1: // Follower
+    case "1": // Follower
       return prompts.follower;
-    case 2: // Friend
+    case "2": // Friend
       return prompts.friend;
     default:
       return prompts.generalUser; // Default to general user
   }
 }
 //#endregion
+

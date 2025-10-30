@@ -1,88 +1,67 @@
-// Requiring necessary modules
 import { Request, Response } from "express";
-import { OpenAI } from "openai";
+import OpenAI from "openai";
 import { config } from "./config/config";
 import fs = require("fs");
 import path = require("path");
 
-// Constants
-const speechFilePath = path.resolve("./speech.mp3");
-
-// Creating an instance of OpenAI
 const openai = new OpenAI({
   apiKey: config.openAiApiKey,
 });
 
-// Function to handle audio request
-async function handleAudioRequest(req: Request, res: Response) {
-  try {
-    const { text } = req.query;
-    console.log("Received text:", text);
 
+// endpoint /audio
+export async function handleAudioRequest(req: Request, res: Response) {
+  try {
+    const { text } = req.body;
     if (!text) {
       return res.status(400).send("Text parameter is required.");
     }
 
-    const ttsFilePath = await generateTextToSpeech(text); // Generate the TTS file
-    await streamSpeechFile(res, ttsFilePath); // Stream the TTS file to the client
-    deleteSpeechFile(ttsFilePath); // Delete the TTS file after streaming
+    console.log("Received text for TTS:", req.body);
+
+    const audioFilePath = await generateTextToSpeech(text); // Generate the TTS file
+    await streamSpeechFile(res, audioFilePath); // Stream the TTS file to the client
   } catch (err) {
     handleError(res, err);
   }
 }
 
-// Function to generate the text-to-speech audio
-async function generateTextToSpeech(text) {
-  try {
-    const response = await openai.audio.speech.create({
-      // whisper parameters
-      model: "tts-1",
-      voice: "nova", // tts speaker voice
-      input: text,
-    });
+// api call to openai to generate tts
+async function generateTextToSpeech(text: string): Promise<string> {
+  const filePath = path.resolve(`./speech_${Date.now()}_${Math.random()}.mp3`);
 
-    const buffer = Buffer.from(await response.arrayBuffer()); // Convert the response to a buffer
-    fs.writeFileSync(speechFilePath, buffer); // Write the buffer to a file
+  const response = await openai.audio.speech.create({
+    model: "gpt-4o-mini-tts",
+    voice: "coral",
+    input: text,
+    instructions: "Speak in a cheerful and positive tone."
+  });
 
-    return speechFilePath; // Return the file path
-  } catch (err) {
-    console.error("Error generating TTS:", err);
-    throw err;
-  }
+  const buffer = Buffer.from(await response.arrayBuffer());
+  await fs.promises.writeFile(filePath, buffer);
+  return filePath;
 }
 
 // Function to stream the TTS file to the client
-function streamSpeechFile(res, filePath) {
-  return new Promise<void>((resolve, reject) => {
-    res.writeHead(200, { "Content-Type": "audio/mpeg" });
+async function streamSpeechFile(res: Response, filePath: string) {
+  res.writeHead(200, { "Content-Type": "audio/mpeg" });
+  const fileStream = fs.createReadStream(filePath);
+  fileStream.pipe(res);
 
-    const fileStream = fs.createReadStream(filePath); // Create a read stream for the file
-    fileStream.pipe(res); // Pipe the file stream to the response
+  fileStream.on("end", async () => {
+    console.log("TTS file sent and stream ended");
+    await fs.promises.unlink(filePath);
+    console.log("TTS file deleted after sending");
+  });
 
-    fileStream.on("end", () => {
-      console.log("TTS file sent and stream ended");
-      resolve();
-    });
-
-    fileStream.on("error", (err) => {
-      console.error("Error streaming the file:", err);
-      reject(err);
-    });
+  fileStream.on("error", (err) => {
+    console.error("Error streaming the file:", err);
+    res.end();
   });
 }
 
-// Function to delete the TTS file after streaming
-function deleteSpeechFile(filePath) {
-  try {
-    fs.unlinkSync(filePath);
-    console.log("TTS file deleted after sending");
-  } catch (err) {
-    console.error("Error deleting the file:", err);
-  }
-}
-
 // Function to handle errors
-function handleError(res, error) {
+function handleError(res: Response, error: any) {
   console.error("Error in handleAudioRequest:", error);
   if (!res.headersSent) {
     res.sendStatus(500);

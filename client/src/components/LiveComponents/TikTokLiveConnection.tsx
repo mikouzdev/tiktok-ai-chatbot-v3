@@ -9,12 +9,14 @@ const TikTokLiveConnection = () => {
   const [connectionStatus, setConnectionStatus] = useState("");
   const [isConnectedToTikTok, setIsConnectedToTikTok] = useState(false);
 
-  const handleUsernameChange = (event) => {
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
   };
 
-  const startLiveConnection = (event) => {
+  const startLiveConnection = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!socket) return console.error("Socket is not available");
 
     if (!socket.connected) {
       return; // Prevent username submission if not connected to socket
@@ -25,23 +27,24 @@ const TikTokLiveConnection = () => {
   };
 
   const disconnectFromLive = () => {
+    if (!socket) return console.error("Socket is not available");
     setConnectionStatus("");
     setIsConnectedToTikTok(false);
     socket.emit("DisconnectFromTikTok");
   };
 
-  const updateLiveConnectionStatus = useCallback((data) => {
+  const updateLiveConnectionStatus = useCallback((data: { type: string; message: string }) => {
     const { type, message } = data;
     setConnectionStatus(`${type}: ${message}`);
     setIsConnectedToTikTok(type === "success");
   }, []);
 
   useEffect(() => {
-    const handleConnectionStatus = (data) => {
+    const handleConnectionStatus = (data: { type: string; message: string }) => {
       updateLiveConnectionStatus(data);
     };
 
-    const handleConnectError = (error) => {
+    const handleConnectError = (error: { message: string }) => {
       setConnectionStatus(`Error: ${error.message}`);
     };
 

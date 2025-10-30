@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 /**
  * This component allows you to send test comments thatll go through the same process as comments that would've come from a tt live.
@@ -10,8 +10,8 @@ const TestCommentPanel = () => {
   const [error, setError] = useState("");
 
   // This function sends a test comment to the server
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     try {
       const response = await fetch("/api/testComment", {

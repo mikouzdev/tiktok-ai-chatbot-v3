@@ -1,12 +1,12 @@
 // tiktokHandler.js
 
-import { WebcastPushConnection } from "tiktok-live-connector";
+import { ControlEvent, TikTokLiveConnection, WebcastEvent } from 'tiktok-live-connector';
 import { config } from "./config/config";
 import { logger } from "./utils/logger";
 import commentQueue = require("./commentQueue.js");
 import gptHandler = require("./gptHandler.js");
 
-let tiktokLiveConnection: WebcastPushConnection;
+
 let tiktokUsername: string;
 let allowCommentProcessing: boolean = true;
 let prevComment: string;
@@ -14,6 +14,7 @@ let prevComment: string;
 const USERNAME_MAX_LENGTH = 30;
 const USERNAME_MIN_LENGTH = 4;
 
+let tiktokLiveConnection: TikTokLiveConnection | null = null;
 //#region Connections and initialization
 
 export function handleTextToSpeechFinished(socket: any, status: string) {
@@ -33,18 +34,14 @@ function handleTikTokLiveConnection(socket: any) {
   }
 
   // Handle connecting to the live
-  tiktokLiveConnection = new WebcastPushConnection(tiktokUsername, {
-    processInitialData: false,
-    sessionId: config.tiktokSessionId,
-    enableWebsocketUpgrade: true,
-  });
+  tiktokLiveConnection = new TikTokLiveConnection(tiktokUsername)
 
   // Connect to the TikTok live
   tiktokLiveConnection
     .connect()
     .then((state) => {
       logger.info(
-        `Connected to roomId ${state.roomId}\n sessionID: ${config.tiktokSessionId}\n Live title: ${state.roomInfo.title}`
+        `Connected to roomId ${state.roomId}\n sessionID: ${config.tiktokSessionId}\n Live title: ${state.roomInfo?.title}`
       );
       socket.emit("ConnectionStatus", {
         type: "success",
@@ -60,18 +57,19 @@ function handleTikTokLiveConnection(socket: any) {
     });
 
   // On a new comment event...
-  tiktokLiveConnection.on("chat", (data) => {
+  tiktokLiveConnection.on(WebcastEvent.CHAT, data => {
     // Send the comment to handling with the neccesary parameters
-    handleComment(data.uniqueId, data.comment, data.followRole, socket); // followRole: 0 = none; 1 = follower; 2 = friends
+    if (!data.user) return; // If user is undefined, return
+    handleComment(data.user.uniqueId, data.comment, data.user.followStatus, socket); // followRole: 0 = none; 1 = follower; 2 = friends
   });
 
   // Log if the connection is disconnected from the tiktok live
-  tiktokLiveConnection.on("disconnected", () =>
+  tiktokLiveConnection.on(ControlEvent.DISCONNECTED, () =>
     logger.info("Disconnected from TikTok live")
   );
 
   // Function to handle a error on the connection
-  tiktokLiveConnection.on("error", (err) => {
+  tiktokLiveConnection.on(ControlEvent.ERROR, (err) => {
     console.error("Error!", err);
   });
 }
@@ -123,7 +121,7 @@ function emitConnectionStatus(socket: any, type: string, message: string) {
 export function handleTestComment(
   user: string,
   comment: string,
-  followRole: number,
+  followRole: string,
   socket: any
 ) {
   logger.info("Handling a test comment.");
@@ -134,7 +132,7 @@ export function handleTestComment(
 function handleComment(
   user: string,
   comment: string,
-  followRole: number,
+  followRole: string,
   socket: any
 ) {
   if (!commentRulesPassed(comment)) {
@@ -162,7 +160,7 @@ function handleComment(
 function processComment(
   user: string,
   comment: string,
-  followRole: number,
+  followRole: string,
   socket: any
 ) {
   logger.info(`Step 2: Processing comment from ${user}`);
